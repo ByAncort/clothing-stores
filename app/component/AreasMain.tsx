@@ -3,21 +3,21 @@ import { useNavigate } from 'react-router-dom';
 
 const slides = [
   {
-    title: 'Model 3',
-    subtitle: 'Lease From $349/mo',
-    url: 'https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Homepage-Card-Model-3-Desktop.png'
+    title: 'New Drops',
+    subtitle: 'From $100',
+    url: 'https://www.staycoldapparel.com/cdn/shop/files/MarrowofEden_black_-OversizedT-Shirt_200GSM_1.jpg'
     , ref: '/Model-3'
   },
   {
-    title: 'Model X',
-    subtitle: 'From $89,990',
-    url: 'https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Homepage-Card-Model-X-New-Desktop.png',
+    title: 'Hoodies',
+    subtitle: 'From $100',
+    url: 'https://www.staycoldapparel.com/cdn/shop/files/DeadBloom_Acid_-OversizedHoodie_350GSM_7.jpg',
     ref: '/Model-X'
   },
   {
-    title: 'Model S',
-    subtitle: 'From $84,990',
-    url: 'https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Homepage-Card-Model-S-New-Desktop.png',
+    title: 'Jackets',
+    subtitle: 'From $200',
+    url: 'https://www.staycoldapparel.com/cdn/shop/files/Grimfall_HalfHalf_-CargoShort_260GSM_3copy-2.jpg',
     ref: '/Model-S'
   },
 ];
@@ -53,8 +53,8 @@ export default function AreasMain() {
           <div className="absolute bottom-20 left-20 text-white">
             <h2 className="text-4xl font-bold">{slides[currentIndex].title}</h2>
             <p className="text-xl">{slides[currentIndex].subtitle}</p>
-            <button onClick={()=> navigate( `${slides[currentIndex].ref} `)} className="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce">
-            Keep holding
+            <button onClick={()=> navigate( `${slides[currentIndex].ref} `)} className="bg-gradient-to-r from-purple-500 to-purple-700 hover:from-blue-600 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce">
+            More
             </button>
 
           </div>

@@ -2,8 +2,8 @@ import React from 'react';
 
 
 const HeroSection = ({
-  title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  subtitle = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed orci tellus. Curabitur ullamcorper pharetra.",
+  title = "BIGGEST GIVEAWAY WE'VE EVER DONE",
+  subtitle = "Destaca tu estilo con streetwear de tattoo artists únicos",
   color = "white",
   id = "home",
   logos = [
@@ -11,7 +11,7 @@ const HeroSection = ({
     { src: "../assets/Google_Cloud_Partner-2.png", alt: "Google Cloud Partner Logo", className: "h-10" },
     { src: "../assets/oracle-partner-seeklogo.png", alt: "Oracle Partner Logo", className: "h-6" }
   ],
-  videoSrc = "../assets/video.webm"
+  videoSrc = "../assets/videoplayback.webm"
 }) => {
   const textColor = `text-${color}`;
 
@@ -23,7 +23,7 @@ const HeroSection = ({
     >
       {/* Video de fondo */}
       <div className="absolute top-0 bottom-0 h-full w-full z-10">
-        <div className="absolute top-0 left-0 w-full h-full bg-black/60 z-10"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-black/70 z-10"></div>
         <video
           className="object-center object-cover h-full w-full"
           autoPlay
