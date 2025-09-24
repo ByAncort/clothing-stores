@@ -1,11 +1,14 @@
 export interface Producto {
   id: number;
   nombre: string;
+  tipo: string;
   precio: number;
-  precioOriginal?: number; 
+  colores: number;
+  calificacion: number;
+  reseñas: number;
   imagen: string;
+  imagenSecundaria: string;
   categoria: string;
-  vendido: number; 
-  fechaVenta: Date;
-  rating?: number;
+  descripcion: string;
+  especificaciones: string[];
 }

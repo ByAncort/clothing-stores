@@ -1,22 +1,9 @@
 import React, { useState } from 'react';
+import type { Producto } from '~/types/product';
 
-// Tipos para los productos
-interface Producto {
-  id: number;
-  nombre: string;
-  tipo: string;
-  precio: number;
-  colores: number;
-  calificacion: number;
-  reseñas: number;
-  imagen: string;
-  imagenSecundaria: string;
-  categoria: string;
-  descripcion: string;
-  especificaciones: string[];
-}
 
-// Datos de productos mejorados
+
+
 const productosMasVendidos: Producto[] = [
   {
     id: 1,
@@ -132,7 +119,6 @@ const productosMasVendidos: Producto[] = [
   }
 ];
 
-// Componente de Rating con estrellas
 const RatingStars: React.FC<{ rating: number; reseñas: number }> = ({ rating, reseñas }) => {
   return (
     <div className="flex items-center gap-2 mb-3">
@@ -230,74 +216,74 @@ const FilterSection: React.FC<{
   onPrecioRangoChange: (rango: [number, number]) => void;
 }> = ({ categorias, categoriaSeleccionada, onCategoriaChange, ordenarPor, onOrdenarChange, precioRango, onPrecioRangoChange }) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Filtro por categoría */}
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Categorías</h3>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => onCategoriaChange('')}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                categoriaSeleccionada === '' 
-                  ? 'bg-gray-900 text-white shadow-sm' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Todas
-            </button>
-            {categorias.map(categoria => (
-              <button
-                key={categoria}
-                onClick={() => onCategoriaChange(categoria)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  categoriaSeleccionada === categoria 
-                    ? 'bg-gray-900 text-white shadow-sm' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {categoria}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Filtro por precio */}
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Rango de Precio</h3>
-          <div className="space-y-2">
-            <input
-              type="range"
-              min="0"
-              max="200"
-              value={precioRango[1]}
-              onChange={(e) => onPrecioRangoChange([precioRango[0], parseInt(e.target.value)])}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            />
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>$0</span>
-              <span>Hasta ${precioRango[1]}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Ordenar por */}
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Ordenar por</h3>
-          <select 
-            value={ordenarPor}
-            onChange={(e) => onOrdenarChange(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+<div className="bg-gray-800/70 backdrop-blur-sm rounded-xl border border-gray-700/50 shadow-lg p-6 mb-8">
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    {/* Filtro por categoría */}
+    <div>
+      <h3 className="text-sm font-medium text-gray-300 mb-4 tracking-wide">Categorías</h3>
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => onCategoriaChange('')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+            categoriaSeleccionada === '' 
+              ? 'bg-white text-gray-900 shadow-md' 
+              : 'bg-gray-700/50 text-gray-300 hover:bg-gray-600/50'
+          }`}
+        >
+          Todas
+        </button>
+        {categorias.map(categoria => (
+          <button
+            key={categoria}
+            onClick={() => onCategoriaChange(categoria)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              categoriaSeleccionada === categoria 
+                ? 'bg-white text-gray-900 shadow-md' 
+                : 'bg-gray-700/50 text-gray-300 hover:bg-gray-600/50'
+            }`}
           >
-            <option value="nombre">Nombre A-Z</option>
-            <option value="precio-menor">Precio: Menor a Mayor</option>
-            <option value="precio-mayor">Precio: Mayor a Menor</option>
-            <option value="calificacion">Mejor Calificados</option>
-            <option value="reseñas">Más Reseñas</option>
-          </select>
+            {categoria}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* Filtro por precio */}
+    <div>
+      <h3 className="text-sm font-medium text-gray-300 mb-4 tracking-wide">Rango de Precio</h3>
+      <div className="space-y-3">
+        <input
+          type="range"
+          min="0"
+          max="200"
+          value={precioRango[1]}
+          onChange={(e) => onPrecioRangoChange([precioRango[0], parseInt(e.target.value)])}
+          className="w-full h-1.5 bg-gray-700 rounded-full appearance-none cursor-pointer slider"
+        />
+        <div className="flex justify-between text-sm text-gray-400">
+          <span>$0</span>
+          <span className="font-medium text-white">Hasta ${precioRango[1]}</span>
         </div>
       </div>
     </div>
+
+    {/* Ordenar por */}
+    <div>
+      <h3 className="text-sm font-medium text-gray-300 mb-4 tracking-wide">Ordenar por</h3>
+      <select 
+        value={ordenarPor}
+        onChange={(e) => onOrdenarChange(e.target.value)}
+        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2.5 text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-transparent transition-colors"
+      >
+        <option value="nombre">Nombre A-Z</option>
+        <option value="precio-menor">Precio: Menor a Mayor</option>
+        <option value="precio-mayor">Precio: Mayor a Menor</option>
+        <option value="calificacion">Mejor Calificados</option>
+        <option value="reseñas">Más Reseñas</option>
+      </select>
+    </div>
+  </div>
+</div>
   );
 };
 
@@ -334,12 +320,12 @@ const CatalogMain: React.FC = () => {
     });
 
   return (
-    <div className="min-h-screen bg-gray-500 py-8 pt-32">
+    <div className="min-h-screen bg-gray-900 py-8 pt-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header mejorado */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Catálogo de Productos</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold text-gray-200 mb-4">Catálogo de Productos</h1>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
             Descubre nuestra colección exclusiva de ropa y accesorios con diseño urbano y calidad premium
           </p>
         </div>

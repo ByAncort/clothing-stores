@@ -1,5 +1,4 @@
-import logoDark from "./logo-dark.svg";
-import logoLight from "./logo-light.svg";
+
 import AreasMain from "~/component/AreasMain";
 import HeroSection from "~/component/HeroSelection";
 import Header from "~/component/Header";
@@ -76,7 +75,7 @@ const productosMasVendidos = [
 
 ];
   return (
-	<main className=" relative w-full h-screen overflow-y-auto overflow-x-hidden scroll-smooth">
+	<main className=" relative w-full h-screen overflow-y-auto overflow-x-hidden scroll-smooth bg-gray-900">
     <div className="snap-center">
       <HeroSection/>
       </div>

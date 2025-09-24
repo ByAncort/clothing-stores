@@ -24,15 +24,15 @@ const CardVentas: React.FC<CardVentasProps> = ({ productos }) => {
   const [imagenActiva, setImagenActiva] = useState<number | null>(null);
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-12 bg-white">
+    <section className="max-w-7xl mx-auto px-6 py-12 ">
       {/* Header */}
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900">
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-gray-100">
           The Shit Right Now
         </h2>
         <a
-          href="#"
-          className="text-xs font-medium text-gray-600 hover:text-gray-900 transition-colors bg-gray-100 px-3 py-1.5 rounded-full"
+          href="/catalog"
+          className="text-xs font-medium text-gray-600 hover:text-gray-900 transition-colors bg-gray-100 px-3 py-1.5 rounded-full border border-2"
         >
           STREET COLLECTION
         </a>

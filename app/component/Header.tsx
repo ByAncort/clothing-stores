@@ -102,12 +102,12 @@ l-26 0 7 67 c10 95 18 107 27 38 4 -33 10 -70 13 -82z"/>
           <ul
             className="flex text-sm [&>li>a]:transition-colors [&>li>a]:duration-500 [&>li>a]:text-current [&>li>a]:font-medium [&>li>a]:inline-block [&>li>a]:px-4 [&>li>a]:py-2"
           >
-            <li><a href="#model-s">New Drops</a></li>
             <li><a href="#model-3">T-Shirts</a></li>
             <li><a href="#model-x">Shorts</a></li>
             <li><a href="#model-y">Hoodies</a></li>
             <li><a href="#powerwall">Jackets</a></li>
             <li><a href="#accesorios">Accessories</a></li>
+            <li><a href="#model-s">Contactanos</a></li>
           </ul>
         </nav>
         <nav className="flex flex-grow justify-end basis-0">
@@ -115,7 +115,10 @@ l-26 0 7 67 c10 95 18 107 27 38 4 -33 10 -70 13 -82z"/>
             className="flex text-sm [&>li>a]:transition-colors [&>li>a]:duration-500 [&>li>a]:text-current [&>li>a]:font-medium [&>li>a]:inline-block [&>li>a]:px-4 [&>li>a]:py-2"
           >
             <li className="hidden xl:block sm:hidden"><a href="#">Tienda</a></li>
-            <li className="hidden xl:block sm:hidden"><a href="#">Cuenta</a></li>
+            <li className="hidden xl:block sm:hidden"><a href="#"><svg className="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
+</svg>
+</a></li>
           </ul>
         </nav>
       </nav>
