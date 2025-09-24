@@ -14,16 +14,16 @@ interface Props {
 const ClientCarousel: React.FC<Props> = ({ clients, logoHeight = "h-16" }) => {
   return (
     <>
-      <div className="text-center mb-16 pt-32">
+      {/* <div className="text-center mb-16 pt-32">
         <h2 className="text-3xl font-extrabold text-gray-800 tracking-tight mb-4">
           Principales Clientes
         </h2>
-      </div>
+      </div> */}
 
-      <div className="relative w-full max-w-7xl mx-auto py-12 overflow-hidden group">
+      <div className="relative w-full  mx-auto py-12 overflow-hidden group">
         {/* Fade masks */}
-        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white via-white to-transparent z-10"></div>
-        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white via-white to-transparent z-10"></div>
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r  to-transparent z-10"></div>
+        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l  to-transparent z-10"></div>
 
         {/* Infinite scroll row */}
         <div className="flex whitespace-nowrap">

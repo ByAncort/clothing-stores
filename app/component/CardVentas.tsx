@@ -1,20 +1,5 @@
 import React, { useState } from 'react';
-
-interface Producto {
-  id: number;
-  nombre: string;
-  tipo: string;
-  precio: number;
-  precioOriginal?: number;
-  descuento?: number;
-  colores: number;
-  calificacion: number;
-  reseñas: number;
-  imagen: string;
-  imagenSecundaria?: string;
-  esNuevo?: boolean;
-  esTrending?: boolean;
-}
+import type { Producto } from '~/types/product';
 
 interface CardVentasProps {
   productos: Producto[];
@@ -22,9 +7,12 @@ interface CardVentasProps {
 
 const CardVentas: React.FC<CardVentasProps> = ({ productos }) => {
   const [imagenActiva, setImagenActiva] = useState<number | null>(null);
+  
+
+  const productosMostrados = productos.slice(0, 4);
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-12 ">
+    <section className=" mx-auto px-6 py-12 ">
       {/* Header */}
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-gray-100">
@@ -38,16 +26,16 @@ const CardVentas: React.FC<CardVentasProps> = ({ productos }) => {
         </a>
       </div>
 
-      {/* Grid productos */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {productos.map((producto) => {
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {productosMostrados.map((producto) => {
           const tieneImagenSecundaria = !!producto.imagenSecundaria;
 
           return (
             <a
               key={producto.id}
-              href={`/producto/${producto.id}`} // <-- aquí puedes poner tu ruta dinámica
-              className="group relative bg-gray-50 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden block"
+              href={`/producto/${producto.id}`}
+              className="group relative bg-black/50  backdrop-blur-md  rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden block"
               onMouseEnter={() => tieneImagenSecundaria && setImagenActiva(producto.id)}
               onMouseLeave={() => tieneImagenSecundaria && setImagenActiva(null)}
             >
@@ -74,34 +62,17 @@ const CardVentas: React.FC<CardVentasProps> = ({ productos }) => {
               {/* Contenido */}
               <div className="p-5">
                 {/* Nombre */}
-                <h3 className="text-sm font-medium text-gray-800 line-clamp-2 group-hover:text-black transition-colors">
+                <h3 className="text-sm font-medium text-gray-500 text-shadow line-clamp-2 group-hover:text-white transition-colors">
                   {producto.nombre}
                 </h3>
 
                 {/* Precio */}
                 <div className="flex items-center justify-between mt-3">
                   <div className="flex items-center space-x-2">
-                    {producto.precioOriginal && producto.precioOriginal > producto.precio ? (
-                      <>
-                        <span className="text-lg font-semibold text-gray-900">
-                          ${producto.precio.toFixed(2)}
-                        </span>
-                        <span className="text-sm text-gray-400 line-through">
-                          ${producto.precioOriginal.toFixed(2)}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="text-lg font-semibold text-gray-900">
-                        ${producto.precio.toFixed(2)}
-                      </span>
-                    )}
-                  </div>
-
-                  {producto.descuento && (
-                    <span className="bg-red-500 text-white text-xs font-medium px-2 py-0.5 rounded-full">
-                      -{producto.descuento}%
+                    <span className="text-lg font-semibold text-gray-500 group-hover:text-white transition-colors">
+                      ${producto.precio.toFixed(2)}
                     </span>
-                  )}
+                  </div>
                 </div>
               </div>
             </a>

@@ -32,7 +32,7 @@ export default function AreasMain() {
   };
   const navigate = useNavigate();
   return (
-    <div className="max-w-[1400px] h-[780px] w-full m-auto py-16 px-4 relative overflow-hidden">
+    <div className="max-w-[1600px] h-[780px] w-full m-auto py-16 px-4 relative overflow-hidden">
       {/* Contenedor principal */}
       <div className="w-full h-full flex relative">
         {/* Slide principal con animación de deslizamiento */}

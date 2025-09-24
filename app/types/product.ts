@@ -11,4 +11,6 @@ export interface Producto {
   categoria: string;
   descripcion: string;
   especificaciones: string[];
+  esVideo: boolean;
+  videoUrl?: string;
 }
