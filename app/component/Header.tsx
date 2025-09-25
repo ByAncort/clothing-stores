@@ -7,7 +7,7 @@ const Header = () => {
     <header className="py-3 px-10 flex items-center fixed top-0 w-full justify-between z-40 text-white">
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
         <div className="flex flex-grow basis-0">
-          <a href="./">
+          <Link to="/">
             <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
               width="330.000000pt" height="153.000000pt" viewBox="0 0 330.000000 153.000000"
               preserveAspectRatio="xMidYMid meet"
@@ -97,7 +97,7 @@ l-26 0 7 67 c10 95 18 107 27 38 4 -33 10 -70 13 -82z"/>
               </g>
             </svg>
 
-          </a>
+          </Link>
         </div>
         <nav className="hidden xl:block sm:hidden">
           <ul
