@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { Producto } from '~/types/product';
+import ProductModal from './ProductModal'; // Asegúrate de importar el modal
 
 interface CardVentasProps {
   productos: Producto[];
@@ -7,12 +8,12 @@ interface CardVentasProps {
 
 const CardVentas: React.FC<CardVentasProps> = ({ productos }) => {
   const [imagenActiva, setImagenActiva] = useState<number | null>(null);
-  
+  const [selectedProduct, setSelectedProduct] = useState<Producto | null>(null); // Estado para el modal
 
   const productosMostrados = productos.slice(0, 4);
 
   return (
-    <section className=" mx-auto px-6 py-12 ">
+    <section className="mx-auto px-6 py-12">
       {/* Header */}
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-gray-100">
@@ -26,18 +27,17 @@ const CardVentas: React.FC<CardVentasProps> = ({ productos }) => {
         </a>
       </div>
 
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {productosMostrados.map((producto) => {
           const tieneImagenSecundaria = !!producto.imagenSecundaria;
 
           return (
-            <a
+            <div
               key={producto.id}
-              href={`/producto/${producto.id}`}
-              className="group relative bg-black/50  backdrop-blur-md  rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden block"
+              className="group relative bg-black/50 backdrop-blur-md rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
               onMouseEnter={() => tieneImagenSecundaria && setImagenActiva(producto.id)}
               onMouseLeave={() => tieneImagenSecundaria && setImagenActiva(null)}
+              onClick={() => setSelectedProduct(producto)} // Abrir modal al hacer click
             >
               {/* Imagen */}
               <div className="h-80 relative">
@@ -75,10 +75,16 @@ const CardVentas: React.FC<CardVentasProps> = ({ productos }) => {
                   </div>
                 </div>
               </div>
-            </a>
+            </div>
           );
         })}
       </div>
+
+      {/* Modal de producto */}
+      <ProductModal 
+        product={selectedProduct} 
+        onClose={() => setSelectedProduct(null)} 
+      />
     </section>
   );
 };
