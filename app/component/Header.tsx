@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router';
 
 const Header = () => {
 
@@ -102,12 +103,12 @@ l-26 0 7 67 c10 95 18 107 27 38 4 -33 10 -70 13 -82z"/>
           <ul
             className="flex text-sm [&>li>a]:transition-colors [&>li>a]:duration-500 [&>li>a]:text-current [&>li>a]:font-medium [&>li>a]:inline-block [&>li>a]:px-4 [&>li>a]:py-2"
           >
-            <li><a href="#model-3">T-Shirts</a></li>
-            <li><a href="#model-x">Shorts</a></li>
-            <li><a href="#model-y">Hoodies</a></li>
-            <li><a href="#powerwall">Jackets</a></li>
-            <li><a href="#accesorios">Accessories</a></li>
-            <li><a href="#model-s">Contactanos</a></li>
+            <li><Link to="/catalog/T-Shirts">T-Shirts</Link></li>
+            <li><Link to="/catalog/Hoodies">Shorts</Link></li>
+            <li><Link to="/catalog/Hoodies">Hoodies</Link></li>
+            <li><Link to="/catalog/Jackets">Jackets</Link></li>
+            <li><Link to="/catalog/Accessories">Accessories</Link></li>
+            <li><Link to="#model-s">Contactanos</Link></li>
           </ul>
         </nav>
         <nav className="flex flex-grow justify-end basis-0">
