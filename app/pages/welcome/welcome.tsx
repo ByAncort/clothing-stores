@@ -5,14 +5,19 @@ import Header from "~/component/Header";
 import ClientCarousel from "~/component/ClientCarousel";
 import CardVentas from "~/component/CardVentas";
 import Footer from "~/component/Footer";
-import Mosaico from "~/component/mosaico";
+
 import type { Producto } from "~/types/product";
+import Mosaico from "~/component/Mosaico";
+import { cartService } from "~/service/CartService";
+import { useLocalStorage } from "~/hooks/useLocalStorage";
 
 
 
 
 export function Welcome() {
-const productosMasVendidos: Producto[] = [
+
+
+const productosIniciales: Producto[] = [
   {
     id: 1,
     nombre: "Dead Bloom (Acid) - Oversized Hoodie",
@@ -138,25 +143,23 @@ const productosMasVendidos: Producto[] = [
   }
 ];
 
-  const clientLogos = [
-    { src: "../assets/company-logos/logo1.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo2.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo3.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo4.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo5.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo6.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo7.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo8.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo9.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo10.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo11.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo12.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo13.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo14.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
-    { src: "../assets/company-logos/logo15.png", alt: "Coca-Cola", url: "https://coca-cola.com" },
+  const [productosMasVendidos, setProductosMasVendidos, isLoaded] = useLocalStorage<Producto[]>(
+    "productosMasVendidos", 
+    productosIniciales
+  );
 
-  ];
+  if (!isLoaded) {
+    return (
+      <main className="relative w-full h-screen overflow-y-auto overflow-x-hidden scroll-smooth bg-gradient-to-br from-neutral-900 to-stone-800">
+        <div className="flex justify-center items-center h-full">
+          <div className="text-white">Cargando...</div>
+        </div>
+      </main>
+    );
+  }
+
   return (
+    
     <main className=" relative w-full h-screen overflow-y-auto overflow-x-hidden scroll-smooth bg-gradient-to-br from-neutral-900 to-stone-800
 ">
       <div className="snap-center">
@@ -169,14 +172,12 @@ const productosMasVendidos: Producto[] = [
         <Header />
       </div>
       <div className="snap-center max-w-[1600px] mx-auto">
-        {/* <ClientCarousel clients={clientLogos}/> */}
         <CardVentas productos={productosMasVendidos} />
       </div>
       <div className="snap-center mt-12 max-w-[1600px] mx-auto">
         <Mosaico/>
       </div>
       <div className="snap-center">
-          {/* <ClientCarousel clients={clientLogos}/> */}
       </div>
       <div className="snap-center">
         <Footer />
