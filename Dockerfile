@@ -14,9 +14,16 @@ COPY --from=development-dependencies-env /app/node_modules /app/node_modules
 WORKDIR /app
 RUN npm run build
 
-FROM node:20-alpine
-COPY ./package.json package-lock.json /app/
+
+FROM node:20-alpine AS production
+RUN npm install -g serve
+
 COPY --from=production-dependencies-env /app/node_modules /app/node_modules
-COPY --from=build-env /app/build /app/build
+COPY --from=build-env /app/dist /app/dist
+COPY --from=build-env /app/package.json /app/
+
 WORKDIR /app
-CMD ["npm", "run", "start"]
+
+EXPOSE 3000
+
+CMD ["serve", "-s", "dist", "-l", "3000"]
