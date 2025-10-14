@@ -11,7 +11,7 @@ const HeroSection = ({
     { src: "../assets/Google_Cloud_Partner-2.png", alt: "Google Cloud Partner Logo", className: "h-10" },
     { src: "../assets/oracle-partner-seeklogo.png", alt: "Oracle Partner Logo", className: "h-6" }
   ],
-  videoSrc = "../assets/videoplayback.webm"
+  videoSrc = "/videoplayback.webm"
 }) => {
   const textColor = `text-${color}`;
 

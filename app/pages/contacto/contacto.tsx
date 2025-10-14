@@ -1,6 +1,6 @@
-import Contact from "~/component/contact";
-import Footer from "~/component/Footer";
-import Header from "~/component/Header";
+import Contact from "../../component/Contact";
+import Footer from "../../component/Footer";
+import Header from "../../component/Header";
 
 
 export default function Contacto() {

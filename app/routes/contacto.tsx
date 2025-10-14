@@ -1,5 +1,5 @@
-import Catalog from "~/pages/catalog/catalog";
-import type { Route } from "./+types/home";
+import Catalog from "../pages/catalog/catalog";
+import * as Route from "react-router";
 import Contacto from "~/pages/contacto/contacto";
 
 export function meta({}: Route.MetaArgs) {

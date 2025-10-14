@@ -10,7 +10,6 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "preview": "vite preview"
-
   },
   "dependencies": {
     "@react-router/node": "^7.5.3",
