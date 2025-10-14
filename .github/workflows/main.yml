@@ -50,8 +50,8 @@ jobs:
            args: >
             -Dsonar.projectKey=clothing-stores
             -Dsonar.organization=byancort 
-            -Dsonar.branch.name=${{ github.ref_name }}
-            
+            -Dsonar.branch.name=stable
+
   build:
     runs-on: ubuntu-latest
     needs: [test, security-scan]
