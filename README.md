@@ -3,7 +3,7 @@
 Aplicación de comercio electrónico moderna especializada en ropa streetwear, desarrollada con React Router 7 y Tailwind CSS.
 
 ## Características Principales
-
+ 
 - **Catálogo de productos** con visualización dinámica de imágenes primarias y secundarias
 - **Sistema de carrito de compras** con persistencia de datos
 - **Página de contacto** con formulario completamente funcional
@@ -11,7 +11,7 @@ Aplicación de comercio electrónico moderna especializada en ropa streetwear, d
 - **Diseño responsive** adaptado para dispositivos móviles y desktop
 - **Animaciones fluidas** implementadas con scroll-snap y transiciones CSS
 - **Navegación intuitiva** mediante React Router
-- **Tipado seguro** con TypeScript
+- **Tipado seguro** con TypeScript 
 
 ## Requisitos del Sistema
 
@@ -160,3 +160,5 @@ El pipeline bloqueará automáticamente si se detecta:
 - Vulnerabilidades de seguridad CRITICAL/HIGH
 - Cobertura de tests inferior al 80%
 - Fallos en tests de integración
+
+
