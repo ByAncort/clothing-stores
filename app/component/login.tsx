@@ -34,7 +34,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   setTimeout(() => {
     setLoading(false);
     alert("✅ Inicio de sesión exitoso (simulado)");
-    navigate("/home"); // puedes cambiar esta ruta según tu proyecto
+    navigate("/"); // puedes cambiar esta ruta según tu proyecto
   }, 1500);
 };
  
@@ -43,7 +43,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     <>
       {showForgot ? (
         // 🔹 Vista de recuperar contraseña
-        <div className="flex min-h-full mt-24 flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="flex min-h-full mt-24 flex-col justify-center px-6 py-12 lg:px-8 pb-24">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm bg-gray-800 p-6 rounded-lg shadow-lg">
             <h3 className="text-lg font-semibold text-white mb-4 text-center">
               Recuperar contraseña 🔒
@@ -87,7 +87,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         </div>
       ) : (
         // 🔹 Vista normal de login
-        <div className="flex min-h-full mt-24 flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="flex min-h-full mt-24 flex-col justify-center px-6 py-12 lg:px-8 pb-24">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <div className="flex justify-center items-center mx-auto h-10 w-auto">
               {/* SVG LOGO */}
@@ -163,16 +163,6 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
                 </button>
               </div>
             </form>
-
-            <p className="mt-10 text-center text-sm/6 text-gray-400">
-              Not a member?{" "}
-              <a
-                href="#"
-                className="font-semibold text-indigo-400 hover:text-indigo-300"
-              >
-                Start a 14 day free trial
-              </a>
-            </p>
           </div>
         </div>
       )}
