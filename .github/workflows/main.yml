@@ -45,6 +45,11 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        with:
+           args: >
+            -Dsonar.projectKey=clothing-stores
+            -Dsonar.organization=byancort 
 
   build:
     runs-on: ubuntu-latest
