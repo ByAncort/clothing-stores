@@ -30,4 +30,7 @@ module.exports = {
   transformIgnorePatterns: [
     "node_modules/(?!(your-es-module-packages)/)",
   ],
+  testEnvironmentOptions: {
+    customExportConditions: [''],
+  },
 };

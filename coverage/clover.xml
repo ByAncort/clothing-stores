@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1760459498517" clover="3.2.0">
-  <project timestamp="1760459498518" name="All files">
-    <metrics statements="387" coveredstatements="7" conditionals="230" coveredconditionals="2" methods="163" coveredmethods="3" elements="780" coveredelements="12" complexity="0" loc="387" ncloc="387" packages="11" files="30" classes="30"/>
+<coverage generated="1760464596509" clover="3.2.0">
+  <project timestamp="1760464596509" name="All files">
+    <metrics statements="387" coveredstatements="20" conditionals="226" coveredconditionals="3" methods="163" coveredmethods="6" elements="776" coveredelements="29" complexity="0" loc="387" ncloc="387" packages="11" files="30" classes="30"/>
     <package name="app">
       <metrics statements="12" coveredstatements="0" conditionals="15" coveredconditionals="0" methods="4" coveredmethods="0"/>
       <file name="root.tsx" path="C:\Users\Diego Cortes\Desktop\clothing-stores\app\root.tsx">
@@ -24,18 +24,18 @@
       </file>
     </package>
     <package name="app.component">
-      <metrics statements="248" coveredstatements="0" conditionals="176" coveredconditionals="0" methods="99" coveredmethods="0"/>
+      <metrics statements="248" coveredstatements="8" conditionals="172" coveredconditionals="0" methods="99" coveredmethods="2"/>
       <file name="AreasMain.tsx" path="C:\Users\Diego Cortes\Desktop\clothing-stores\app\component\AreasMain.tsx">
-        <metrics statements="9" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="4" coveredmethods="0"/>
-        <line num="4" count="0" type="stmt"/>
-        <line num="26" count="0" type="stmt"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="29" count="0" type="stmt"/>
+        <metrics statements="9" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="2"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="26" count="3" type="stmt"/>
+        <line num="27" count="3" type="stmt"/>
+        <line num="29" count="3" type="stmt"/>
         <line num="30" count="0" type="stmt"/>
-        <line num="31" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="34" count="0" type="stmt"/>
-        <line num="56" count="0" type="stmt"/>
+        <line num="33" count="3" type="stmt"/>
+        <line num="34" count="3" type="stmt"/>
+        <line num="36" count="3" type="stmt"/>
+        <line num="55" count="1" type="stmt"/>
       </file>
       <file name="CardVentas.tsx" path="C:\Users\Diego Cortes\Desktop\clothing-stores\app\component\CardVentas.tsx">
         <metrics statements="11" coveredstatements="0" conditionals="12" coveredconditionals="0" methods="6" coveredmethods="0"/>
@@ -392,15 +392,15 @@
       </file>
     </package>
     <package name="app.pages.catalog">
-      <metrics statements="6" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="3" coveredmethods="0"/>
+      <metrics statements="6" coveredstatements="5" conditionals="2" coveredconditionals="1" methods="3" coveredmethods="1"/>
       <file name="catalog.tsx" path="C:\Users\Diego Cortes\Desktop\clothing-stores\app\pages\catalog\catalog.tsx">
-        <metrics statements="6" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="3" coveredmethods="0"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="317" count="0" type="stmt"/>
-        <line num="320" count="0" type="stmt"/>
-        <line num="321" count="0" type="cond" truecount="0" falsecount="2"/>
+        <metrics statements="6" coveredstatements="5" conditionals="2" coveredconditionals="1" methods="3" coveredmethods="1"/>
+        <line num="8" count="5" type="stmt"/>
+        <line num="317" count="5" type="stmt"/>
+        <line num="320" count="5" type="stmt"/>
+        <line num="321" count="5" type="cond" truecount="1" falsecount="1"/>
         <line num="323" count="0" type="stmt"/>
-        <line num="330" count="0" type="stmt"/>
+        <line num="330" count="5" type="stmt"/>
       </file>
     </package>
     <package name="app.pages.contacto">
