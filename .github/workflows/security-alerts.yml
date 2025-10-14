@@ -1,0 +1,20 @@
+name: Security Alerts
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check for security vulnerabilities
+      run: |
+        npm audit --audit-level high
+        if [ $? -ne 0 ]; then
+          echo "CRITICAL: High severity vulnerabilities found!"
+          echo "Blocking deployment until resolved."
+          exit 1
+        fi
