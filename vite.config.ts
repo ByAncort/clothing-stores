@@ -1,15 +1,30 @@
-import { reactRouter } from "@react-router/dev/vite";
-import tailwindcss from "@tailwindcss/vite";
-import { resolve } from "path";
-import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import tailwindcss from 'tailwindcss';
+import path from 'path';
 
+// Configuración base de Vite
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths({ root: "./" })],
+  plugins: [
+    react(),          // 👈 plugin oficial de React
+    tsconfigPaths(),  // 👈 soporte para alias de tsconfig
+  ],
+
+  css: {
+    postcss: {
+      plugins: [tailwindcss()], // 👈 Tailwind habilitado correctamente
+    },
+  },
+
   resolve: {
-    alias: [
-      { find: '~', replacement: '/app' }
-    ],
+    alias: {
+      '~': path.resolve(__dirname, 'app'), // 👈 para ~/hooks, ~/component, etc.
+    },
+  },
+
+  server: {
+    port: 5173,
+    open: true,
   },
 });
-
