@@ -1,69 +1,69 @@
 # Stay Cold Apparel - E-commerce de Streetwear
 
-Aplicación de comercio electrónico moderna para ropa streetwear, construida con React Router 7 y Tailwind CSS.
+Aplicación de comercio electrónico moderna especializada en ropa streetwear, desarrollada con React Router 7 y Tailwind CSS.
 
-## 🚀 Características
+## Características Principales
 
-- **Catálogo de productos** con visualización de imágenes primarias y secundarias al hover
-- **Sistema de carrito de compras** persistente
-- **Página de contacto** con formulario funcional
-- **Hero section** con video de fondo
-- **Diseño responsive** optimizado para móviles y desktop
-- **Animaciones fluidas** con scroll-snap y transiciones CSS
-- **Navegación intuitiva** con React Router
+- **Catálogo de productos** con visualización dinámica de imágenes primarias y secundarias
+- **Sistema de carrito de compras** con persistencia de datos
+- **Página de contacto** con formulario completamente funcional
+- **Hero section** con video de fondo optimizado
+- **Diseño responsive** adaptado para dispositivos móviles y desktop
+- **Animaciones fluidas** implementadas con scroll-snap y transiciones CSS
+- **Navegación intuitiva** mediante React Router
 - **Tipado seguro** con TypeScript
 
-## 📋 Requisitos Previos
+## Requisitos del Sistema
 
 - Node.js 20.x o superior
 - npm (incluido con Node.js)
 - Git
 - Docker (opcional, para despliegue con contenedores)
 
-## 🔧 Instalación
+## Instalación y Configuración
 
-1. Clona el repositorio:
+1. Clonar el repositorio:
 ```bash
 git clone https://github.com/ByAncort/clothing-stores.git
 cd clothing-stores
 ```
 
-2. Instala las dependencias:
+2. Instalar dependencias:
 ```bash
 npm ci
 ```
 
-## 💻 Desarrollo
+## Desarrollo
 
-Inicia el servidor de desarrollo:
+Iniciar el servidor de desarrollo:
 ```bash
 npm run dev
 ```
 
 La aplicación estará disponible en `http://localhost:5173`
 
-## 🐳 Docker
+## Despliegue con Docker
 
-### Construir la imagen
+### Construcción de la imagen
 ```bash
 docker build -t eccomerce-landing-page .
 ```
 
-### Ejecutar el contenedor
+### Ejecución del contenedor
 ```bash
 docker run -p 3000:3000 eccomerce-landing-page
 ```
 
 La aplicación estará disponible en `http://localhost:3000`
 
-## 🏗️ Construcción para Producción
+## Construcción para Producción
 
 ```bash
 npm run build
 npm run start
 ```
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 - **Frontend**: React 19.1.0
 - **Routing**: React Router 7.5.3
@@ -74,7 +74,7 @@ npm run start
 - **Iconos**: Lucide React
 - **Contenedores**: Docker
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 clothing-stores/
@@ -85,42 +85,78 @@ clothing-stores/
 │   ├── services/      # Lógica de negocio
 │   └── types/         # Definiciones TypeScript
 ├── public/            # Archivos estáticos
-└── .github/           # CI/CD workflows
+└── .github/           # Configuración CI/CD
 ```
 
-## 🚢 CI/CD
+## Integración Continua y Despliegue
 
-El proyecto incluye un pipeline automatizado con GitHub Actions que ejecuta:
+El proyecto implementa un pipeline automatizado mediante GitHub Actions que ejecuta:
 
-- Tests con cobertura
-- Análisis de seguridad (Snyk, SonarQube)
-- Build de Docker
-- Deploy automático en rama main
+- Ejecución de tests con análisis de cobertura
+- Escaneo de seguridad (Snyk, SonarQube)
+- Construcción de imagen Docker
+- Despliegue automático en rama principal
 
-## 📝 Scripts Disponibles
+## Scripts Disponibles
 
-| Script | Descripción |
-|--------|-------------|
-| `npm run dev` | Servidor de desarrollo |
-| `npm run build` | Build de producción |
-| `npm run start` | Servidor de producción |
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Inicia servidor de desarrollo |
+| `npm run build` | Construye versión de producción |
+| `npm run start` | Inicia servidor de producción |
 | `npm run typecheck` | Verificación de tipos TypeScript |
-| `docker build -t eccomerce-landing-page .` | Construir imagen Docker |
-| `docker run -p 3000:3000 eccomerce-landing-page` | Ejecutar contenedor |
+| `docker build -t eccomerce-landing-page .` | Construye imagen Docker |
+| `docker run -p 3000:3000 eccomerce-landing-page` | Ejecuta contenedor |
 
-## 🐛 Troubleshooting
+## Resolución de Problemas
 
-### Problemas comunes
+### Situaciones Comunes
 
-**Error de puertos:**
-Si el puerto 3000 está ocupado, usa otro puerto:
+**Conflicto de puertos:**
+Si el puerto 3000 se encuentra ocupado, utilizar puerto alternativo:
 ```bash
 docker run -p 8080:3000 eccomerce-landing-page
 ```
 
-**Problemas de permisos con Docker:**
-En Linux, asegúrate de que tu usuario esté en el grupo docker:
+**Problemas de permisos en Docker:**
+En sistemas Linux, verificar que el usuario pertenezca al grupo docker:
 ```bash
 sudo usermod -aG docker $USER
 ```
 
+**Prueba de Docker Compose (Entorno Staging Simulado)**
+
+```bash
+# Crear y ejecutar entorno de staging
+docker-compose -f docker-compose.staging.yml up --build
+
+# Verificar estado de servicios en terminal separada
+docker-compose -f docker-compose.staging.yml ps
+
+# Validar health check
+curl http://localhost:3000
+```
+
+## Pipeline de Calidad y Seguridad
+
+### Fases del Pipeline:
+
+1. **Análisis de Código** - Tests unitarios, cobertura y verificación de estilo
+2. **Escaneo de Seguridad** - Auditoría de dependencias y vulnerabilidades
+3. **Construcción Docker** - Build optimizado con arquitectura multi-stage
+4. **Despliegue Staging** - Entorno simulado con Docker Compose
+5. **Despliegue Producción** - Kubernetes con verificaciones de salud
+
+### Estándares de Calidad:
+
+- **Trazabilidad**: Cada commit genera una construcción versionada
+- **Seguridad**: Escaneo automático con Trivy y npm audit
+- **Testing**: Cobertura mínima requerida del 80%
+- **Health Checks**: Monitoreo continuo en producción
+
+### Criterios de Bloqueo:
+
+El pipeline bloqueará automáticamente si se detecta:
+- Vulnerabilidades de seguridad CRITICAL/HIGH
+- Cobertura de tests inferior al 80%
+- Fallos en tests de integración
