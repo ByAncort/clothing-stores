@@ -1,6 +1,7 @@
 {
   "name": "landing-page-react",
   "private": true,
+  "homepage": "https://byancort.github.io/clothing-stores/",
   "type": "module",
   "scripts": {
     "build": "react-router build",
@@ -9,7 +10,10 @@
     "typecheck": "react-router typegen && tsc",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+
   },
   "dependencies": {
     "@react-router/node": "^7.5.3",
