@@ -29,6 +29,18 @@ jobs:
         with:
           file: ./coverage/lcov.info
 
+  sonarqube:
+    name: SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   security-scan:
     runs-on: ubuntu-latest
     steps:
@@ -40,21 +52,10 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
-      
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-        with:
-           args: >
-            -Dsonar.projectKey=clothing-stores
-            -Dsonar.organization=byancort 
-            -Dsonar.branch.name=stable
 
   build:
     runs-on: ubuntu-latest
-    needs: [test, security-scan]
+    needs: [test, security-scan, sonarqube]
     steps:
       - uses: actions/checkout@v4
       
