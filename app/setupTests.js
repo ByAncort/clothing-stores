@@ -1,6 +1,11 @@
-import "@testing-library/jest-dom";
+import jasmineDom from '@testing-library/jasmine-dom';
+import { cleanup } from '@testing-library/react';
 
-import { TextEncoder, TextDecoder } from "util";
+beforeAll(() => {
+  // Registra todos los matchers: toBeInTheDocument, toHaveTextContent, etc.
+  jasmine.addMatchers(jasmineDom);
+});
 
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
+afterEach(() => {
+  cleanup();
+});
