@@ -16,7 +16,7 @@
     "deploy": "gh-pages -d build"
   },
   "dependencies": {
-    "@react-router/node": "^7.5.3",
+    "@react-router/node": "^7.9.2",
     "@react-router/serve": "^7.5.3",
     "@react-three/drei": "^10.4.2",
     "@react-three/fiber": "^9.0.0",
