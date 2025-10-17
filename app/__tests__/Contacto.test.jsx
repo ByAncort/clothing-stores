@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import Contacto from "../pages/contacto/contacto"; 
+import Header from '~/component/Header';
 
 
 jest.mock("~/component/Header", () => ({

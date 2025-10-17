@@ -2,6 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import  Catalog  from "../pages/catalog/catalog";
 import { BrowserRouter, useParams } from "react-router-dom";
+import Header from '~/component/Header';
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),

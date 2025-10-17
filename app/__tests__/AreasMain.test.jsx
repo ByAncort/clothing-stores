@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import Header from '~/component/Header';
 
 // Mock de react-router-dom
 const mockNavigate = jest.fn();
