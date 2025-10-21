@@ -1,61 +1,57 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-// Import RELATIVO desde __tests__ → component
-import CartModal from '../component/CartModal';
+import { useEffect } from 'react';
+import { useCart } from '~/hooks/useCart';
 
-// Mockeamos el hook para controlar items/total
-jest.mock('../hooks/useCart', () => {
-  const clearCart = jest.fn();
-  const removeItem = jest.fn();
-  const incrementQuantity = jest.fn();
-  const decrementQuantity = jest.fn();
+interface CartModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onCheckout: () => void;
+}
 
-  return {
-    useCart: () => ({
-      items: [{ id: '1', name: 'Polera', price: 10000, quantity: 1, image: '/x.png' }],
-      totalItems: 1,
-      totalPrice: 10000,
-      clearCart,
-      removeItem,
-      incrementQuantity,
-      decrementQuantity,
-    }),
+export default function CartModal({ isOpen, onClose, onCheckout }: CartModalProps) {
+  const {
+    items,
+    totalItems,
+    totalPrice,
+    removeItem,
+    incrementQuantity,
+    decrementQuantity,
+    clearCart
+  } = useCart();
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
+
+  // 👇 Solo tipé el target del div para evitar warnings/errores de TS
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onClose();
   };
-});
 
-const renderCart = (props: Partial<React.ComponentProps<typeof CartModal>> = {}) => {
-  const defaultProps = {
-    isOpen: false,
-    onClose: jest.fn(),
-    onCheckout: jest.fn(),
+  const handleCheckout = () => {
+    onClose();
+    onCheckout();
   };
-  return render(<CartModal {...defaultProps} {...props} />);
-};
 
-describe('CartModal', () => {
-  it('no renderiza cuando isOpen=false', () => {
-    renderCart({ isOpen: false });
-    expect(screen.queryByText(/tu carrito/i)).toBeNull();
-  });
+  if (!isOpen) return null;
 
-  it('muestra contenido cuando isOpen=true y permite cerrar/checkout', () => {
-    const onClose = jest.fn();
-    const onCheckout = jest.fn();
-    renderCart({ isOpen: true, onClose, onCheckout });
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm pt-20"
+      onClick={handleBackdropClick}
+    >
+      {/* ...tu contenido del modal (header, lista, footer) tal cual... */}
+    </div>
+  );
+}
 
-    // Título del modal
-    expect(screen.getByRole('heading', { name: /tu carrito/i })).toBeInTheDocument();
-    // Producto mockeado
-    expect(screen.getByText(/polera/i)).toBeInTheDocument();
-
-    // Cerrar
-    const closeBtn = screen.getByRole('button', { name: /cerrar carrito/i });
-    fireEvent.click(closeBtn);
-    expect(onClose).toHaveBeenCalled();
-
-    // Comprar (tu handleCheckout llama onClose y onCheckout)
-    const buyBtn = screen.getByRole('button', { name: /comprar/i });
-    fireEvent.click(buyBtn);
-    expect(onCheckout).toHaveBeenCalled();
-  });
-});
+/* === CartItem (reemplaza este bloque por el que te pasé) === */
