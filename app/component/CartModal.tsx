@@ -1,3 +1,155 @@
+import { useEffect, useRef } from 'react';
+import { useCart } from '~/hooks/useCart';
+
+interface CartModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onCheckout: () => void;
+}
+
+export default function CartModal({ isOpen, onClose, onCheckout }: CartModalProps) {
+  const {
+    items,
+    totalItems,
+    totalPrice,
+    removeItem,
+    incrementQuantity,
+    decrementQuantity,
+    clearCart,
+  } = useCart();
+
+  // foco inicial en botón cerrar
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden';
+      // intentamos enfocar el botón cerrar al abrir
+      setTimeout(() => closeBtnRef.current?.focus(), 0);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  const handleCheckout = () => {
+    onClose();
+    onCheckout();
+  };
+
+  if (!isOpen) return null;
+
+  const titleId = 'cart-modal-title';
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+      onClick={handleBackdropClick}
+      // Accesibilidad
+      role="presentation"
+    >
+      {/* Contenedor responsive del “panel” */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className="
+          absolute inset-x-0 bottom-0
+          mx-0 rounded-t-2xl bg-white shadow-xl
+          h-[92vh] overflow-hidden
+          md:inset-0 md:m-auto md:h-auto md:max-h-[80vh] md:w-full md:max-w-md
+          md:rounded-2xl
+        "
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b">
+          <h2 id={titleId} className="text-lg font-semibold text-gray-900">
+            Tu Carrito ({totalItems})
+          </h2>
+          <button
+            ref={closeBtnRef}
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Cerrar carrito"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Lista de productos */}
+        <div className="overflow-y-auto max-h-[calc(92vh-9rem)] md:max-h-96">
+          {items.length === 0 ? (
+            <div className="flex flex-col items-center justify-center p-8 text-gray-500">
+              <svg className="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5.5M7 13l2.5 5.5m0 0L17 21" />
+              </svg>
+              <p className="text-lg font-medium mb-2">Tu carrito está vacío</p>
+              <p className="text-sm text-center">Agrega algunos productos para comenzar</p>
+            </div>
+          ) : (
+            <div className="p-4 space-y-4">
+              {items.map((item) => (
+                <CartItem
+                  key={item.id}
+                  item={item}
+                  onRemove={removeItem}
+                  onIncrement={incrementQuantity}
+                  onDecrement={decrementQuantity}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Footer con total y botones */}
+        {items.length > 0 && (
+          <div className="border-t p-4 space-y-4">
+            {/* Total */}
+            <div className="flex justify-between items-center text-lg font-semibold">
+              <span>Total:</span>
+              <span>${totalPrice.toFixed(2)}</span>
+            </div>
+
+            {/* Botones de acción */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  clearCart();
+                  onClose();
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              >
+                Limpiar
+              </button>
+              <button
+                onClick={handleCheckout}
+                className="flex-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
+              >
+                Comprar
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------ Item del carrito ------------------ */
+
 interface CartItemProps {
   item: {
     id: string | number;
@@ -23,11 +175,10 @@ function CartItem({ item, onRemove, onIncrement, onDecrement }: CartItemProps) {
         className="w-16 h-16 object-cover rounded-md flex-shrink-0"
       />
 
-      {/* Información del producto */}
+      {/* Información */}
       <div className="flex-1 min-w-0">
         <h3 className="font-medium text-gray-900 truncate">{item.name}</h3>
 
-        {/* Variantes (talla, color) */}
         {(item.size || item.color) && (
           <div className="flex gap-2 mt-1 text-sm text-gray-600">
             {item.size && <span>Talla: {item.size}</span>}
@@ -35,20 +186,18 @@ function CartItem({ item, onRemove, onIncrement, onDecrement }: CartItemProps) {
           </div>
         )}
 
-        {/* Precio + Controles */}
         <div className="flex items-center justify-between mt-2">
           <span className="font-semibold text-gray-900">
             ${(item.price * item.quantity).toFixed(2)}
           </span>
 
-          {/* Controles de cantidad + eliminar */}
           <div className="flex items-center gap-2">
             {/* - */}
             <button
               onClick={() => onDecrement(item.id)}
-              className={`w-7 h-7 flex items-center justify-center rounded
-                          text-white bg-rose-600 hover:bg-rose-700
-                          disabled:bg-rose-300 disabled:cursor-not-allowed`}
+              className="w-7 h-7 flex items-center justify-center rounded
+                         text-white bg-rose-600 hover:bg-rose-700
+                         disabled:bg-rose-300 disabled:cursor-not-allowed"
               aria-label="Disminuir cantidad"
               disabled={item.quantity <= 1}
             >
@@ -62,8 +211,8 @@ function CartItem({ item, onRemove, onIncrement, onDecrement }: CartItemProps) {
             {/* + */}
             <button
               onClick={() => onIncrement(item.id)}
-              className={`w-7 h-7 flex items-center justify-center rounded
-                          text-white bg-emerald-600 hover:bg-emerald-700`}
+              className="w-7 h-7 flex items-center justify-center rounded
+                         text-white bg-emerald-600 hover:bg-emerald-700"
               aria-label="Aumentar cantidad"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,7 +220,7 @@ function CartItem({ item, onRemove, onIncrement, onDecrement }: CartItemProps) {
               </svg>
             </button>
 
-            {/* Eliminar */}
+            {/* eliminar */}
             <button
               onClick={() => onRemove(item.id)}
               className="w-7 h-7 flex items-center justify-center rounded text-gray-400 hover:text-red-500 transition-colors"

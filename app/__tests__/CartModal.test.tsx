@@ -1,57 +1,52 @@
-import { useEffect } from 'react';
-import { useCart } from '~/hooks/useCart';
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import CartModal from '~/component/CartModal';
 
-interface CartModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onCheckout: () => void;
-}
 
-export default function CartModal({ isOpen, onClose, onCheckout }: CartModalProps) {
-  const {
-    items,
-    totalItems,
-    totalPrice,
-    removeItem,
-    incrementQuantity,
-    decrementQuantity,
-    clearCart
-  } = useCart();
+// Mock del hook useCart
+jest.mock('../hooks/useCart', () => ({
+  useCart: () => ({
+    items: [{ id: '1', name: 'Polera', price: 10000, quantity: 1, image: '/x.png' }],
+    totalItems: 1,
+    totalPrice: 10000,
+    clearCart: jest.fn(),
+    removeItem: jest.fn(),
+    incrementQuantity: jest.fn(),
+    decrementQuantity: jest.fn(),
+  }),
+}));
 
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
-    }
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen, onClose]);
-
-  // 👇 Solo tipé el target del div para evitar warnings/errores de TS
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) onClose();
+const renderCart = (props: Partial<React.ComponentProps<typeof CartModal>> = {}) => {
+  const defaultProps = {
+    isOpen: false,
+    onClose: jest.fn(),
+    onCheckout: jest.fn(),
   };
+  return render(<CartModal {...defaultProps} {...props} />);
+};
 
-  const handleCheckout = () => {
-    onClose();
-    onCheckout();
-  };
+describe('CartModal', () => {
+  it('no renderiza cuando isOpen=false', () => {
+    renderCart({ isOpen: false });
+    expect(screen.queryByText(/tu carrito/i)).toBeNull();
+  });
 
-  if (!isOpen) return null;
+  it('muestra contenido cuando isOpen=true y permite cerrar/checkout', () => {
+    const onClose = jest.fn();
+    const onCheckout = jest.fn();
+    renderCart({ isOpen: true, onClose, onCheckout });
 
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm pt-20"
-      onClick={handleBackdropClick}
-    >
-      {/* ...tu contenido del modal (header, lista, footer) tal cual... */}
-    </div>
-  );
-}
+    // título
+    expect(screen.getByRole('heading', { name: /tu carrito/i })).toBeInTheDocument();
+    // producto mockeado
+    expect(screen.getByText(/polera/i)).toBeInTheDocument();
 
-/* === CartItem (reemplaza este bloque por el que te pasé) === */
+    // cerrar
+    fireEvent.click(screen.getByRole('button', { name: /cerrar carrito/i }));
+    expect(onClose).toHaveBeenCalled();
+
+    // comprar
+    fireEvent.click(screen.getByRole('button', { name: /comprar/i }));
+    expect(onCheckout).toHaveBeenCalled();
+  });
+});
