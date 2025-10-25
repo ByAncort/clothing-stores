@@ -1,7 +1,7 @@
-// services/CartService.ts
+// app/service/CartService.ts - VERSIÓN CORREGIDA (MISMA LÓGICA)
 import type { Producto } from '~/types/product';
 
-interface CartItem {
+export interface CartItem {
   id: string | number;
   name: string;
   price: number;
@@ -9,153 +9,104 @@ interface CartItem {
   image: string;
   size?: string;
   color?: string;
-  // Otros atributos específicos del producto
-  [key: string]: any;
+}
+
+interface CartOptions {
+  size?: string;
+  color?: string;
 }
 
 class CartService {
   private items: CartItem[] = [];
-  private subscribers: Array<(items: CartItem[]) => void> = [];
+  private subscribers: ((items: CartItem[]) => void)[] = [];
 
-  constructor() {
-    this.loadFromStorage();
+  private notifySubscribers() {
+    this.subscribers.forEach(callback => callback([...this.items]));
   }
 
-  // Cargar carrito desde localStorage
-  public loadFromStorage() {
-    if (typeof window !== 'undefined') {
-      const savedCart = localStorage.getItem('cart');
-      if (savedCart) {
-        try {
-          this.items = JSON.parse(savedCart);
-        } catch (error) {
-          console.error('Error loading cart from storage:', error);
-          this.items = [];
-        }
-      }
-    }
+  getItems(): CartItem[] {
+    return [...this.items];
   }
 
-  // Guardar carrito en localStorage
-  private saveToStorage() {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('cart', JSON.stringify(this.items));
-    }
+  getTotalItems(): number {
+    return this.items.reduce((total, item) => total + item.quantity, 0);
   }
 
-  // Suscribirse a cambios
-  public subscribe(callback: (items: CartItem[]) => void): () => void {
+  getTotalPrice(): number {
+    return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+  }
+
+  subscribe(callback: (items: CartItem[]) => void): () => void {
     this.subscribers.push(callback);
-    // Ejecutar callback inmediatamente con el estado actual
-    callback(this.items);
-    
     return () => {
       this.subscribers = this.subscribers.filter(sub => sub !== callback);
     };
   }
 
-  // Notificar a los suscriptores
-  private notify() {
-    this.subscribers.forEach(callback => callback([...this.items]));
-    this.saveToStorage();
-  }
+  addItem(product: Producto, options?: CartOptions): void {
+    const existingItem = this.items.find(item => 
+      item.id === product.id && 
+      item.size === options?.size && 
+      item.color === options?.color
+    );
 
-  // Agregar item al carrito (versión para Producto)
-  public addItem(product: Producto, options: { size?: string; color?: string } = {}) {
-    // Crear ID único que considere talla y color si existen
-    const uniqueId = this.createUniqueId(product.id, options.size, options.color);
-    
-    const existingItem = this.items.find(item => item.id === uniqueId);
-    
     if (existingItem) {
       existingItem.quantity += 1;
     } else {
-      const cartItem: CartItem = {
-        id: uniqueId,
-        name: product.nombre,
-        price: product.precio,
-        image: product.imagen,
+      this.items.push({
+        id: product.id,
+        name: product.nombre,    // ✅ CORRECCIÓN: product.nombre en lugar de product.name
+        price: product.precio,   // ✅ CORRECCIÓN: product.precio en lugar de product.price
         quantity: 1,
-        originalProductId: product.id, // Guardar el ID original del producto
-        ...options
-      };
-      
-      this.items.push(cartItem);
+        image: product.imagen,   // ✅ CORRECCIÓN: product.imagen en lugar de product.image
+        size: options?.size,
+        color: options?.color
+      });
     }
-    
-    this.notify();
+    this.notifySubscribers();
   }
 
-  // Crear ID único basado en producto, talla y color
-  private createUniqueId(productId: number, size?: string, color?: string): string {
-    let uniqueId = productId.toString();
-    if (size) uniqueId += `-${size}`;
-    if (color) uniqueId += `-${color}`;
-    return uniqueId;
-  }
-
-  // Remover item del carrito
-  public removeItem(itemId: string | number) {
+  removeItem(itemId: string | number): void {
     this.items = this.items.filter(item => item.id !== itemId);
-    this.notify();
+    this.notifySubscribers();
   }
 
-  // Actualizar cantidad
-  public updateQuantity(itemId: string | number, quantity: number) {
+  updateQuantity(itemId: string | number, quantity: number): void {
     const item = this.items.find(item => item.id === itemId);
     if (item) {
-      if (quantity <= 0) {
+      item.quantity = quantity;
+      if (item.quantity <= 0) {
         this.removeItem(itemId);
       } else {
-        item.quantity = quantity;
-        this.notify();
+        this.notifySubscribers();
       }
     }
   }
 
-  // Incrementar cantidad
-  public incrementQuantity(itemId: string | number) {
-    this.updateQuantity(itemId, this.getQuantity(itemId) + 1);
+  incrementQuantity(itemId: string | number): void {
+    this.updateQuantity(itemId, 
+      (this.items.find(item => item.id === itemId)?.quantity || 0) + 1
+    );
   }
 
-  // Decrementar cantidad
-  public decrementQuantity(itemId: string | number) {
-    this.updateQuantity(itemId, this.getQuantity(itemId) - 1);
+  decrementQuantity(itemId: string | number): void {
+    this.updateQuantity(itemId, 
+      (this.items.find(item => item.id === itemId)?.quantity || 0) - 1
+    );
   }
 
-  // Obtener cantidad de un item específico
-  public getQuantity(itemId: string | number): number {
-    const item = this.items.find(item => item.id === itemId);
-    return item ? item.quantity : 0;
-  }
-
-  // Obtener cantidad total de items
-  public getTotalItems(): number {
-    return this.items.reduce((total, item) => total + item.quantity, 0);
-  }
-
-  // Obtener items del carrito
-  public getItems(): CartItem[] {
-    return [...this.items];
-  }
-
-  // Limpiar carrito
-  public clear() {
+  clear(): void {
     this.items = [];
-    this.notify();
+    this.notifySubscribers();
   }
 
-  // Obtener total del carrito
-  public getTotalPrice(): number {
-    return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-  }
-
-  // Verificar si un producto está en el carrito
-  public isInCart(productId: number, size?: string, color?: string): boolean {
-    const uniqueId = this.createUniqueId(productId, size, color);
-    return this.items.some(item => item.id === uniqueId);
+  isInCart(productId: number, size?: string, color?: string): boolean {
+    return this.items.some(item => 
+      item.id === productId && 
+      item.size === size && 
+      item.color === color
+    );
   }
 }
 
-// Instancia única (singleton)
 export const cartService = new CartService();

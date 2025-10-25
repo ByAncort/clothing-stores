@@ -1,20 +1,63 @@
+// app/components/Header.tsx
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Cambiado a react-router-dom
+import { Link } from 'react-router-dom';
 import CartIcon from './CartIcon';
+import CartModal from './CartModal';
+import CheckoutModal from './CheckoutModal';
+import { useCart } from '~/hooks/useCart';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const cart = useCart();
+
+  // Debug del carrito
+  useEffect(() => {
+    console.log('🛒 CARRITO DEBUG - Estado actual:', {
+      items: cart?.items || [],
+      totalItems: cart?.totalItems || 0,
+      totalPrice: cart?.totalPrice || 0,
+    });
+    (window as any).cartDebug = cart;
+  }, [cart]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Cerrar menú al hacer clic en un enlace
+  const openCart = () => {
+    console.log('🛒 Abriendo carrito, estado:', cart);
+    setIsCartOpen(true);
+  };
+
+  const closeCart = () => {
+    setIsCartOpen(false);
+  };
+
+  const openCheckout = () => {
+    console.log('💰 Abriendo checkout...');
+    if (cart.items.length === 0) {
+      alert('Tu carrito está vacío. Agrega algunos productos antes de comprar.');
+      return;
+    }
+    setIsCheckoutOpen(true);
+    closeCart();
+  };
+
+  const closeCheckout = () => {
+    setIsCheckoutOpen(false);
+  };
+
+  const handleBackToCart = () => {
+    closeCheckout();
+    openCart();
+  };
+
   const handleLinkClick = () => {
     setIsMenuOpen(false);
   };
 
-  // Cerrar menú al cambiar el tamaño de la ventana
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1280) {
@@ -79,13 +122,15 @@ const Header = () => {
           <ul className="flex text-sm [&>li>a]:transition-colors [&>li>a]:duration-500 [&>li>a]:text-current [&>li>a]:font-medium [&>li>a]:inline-block [&>li>a]:px-4 [&>li>a]:py-2">
             <li><Link to="/catalog" onClick={handleLinkClick}>Tienda</Link></li>
             <li><Link to="/login" onClick={handleLinkClick}>Login</Link></li>
-            <CartIcon />
+            <li>
+              <CartIcon onClick={openCart} />
+            </li>
           </ul>
         </nav>
 
         {/* Botón menú hamburguesa - Mobile */}
         <div className="xl:hidden flex items-center gap-4">
-          <CartIcon />
+          <CartIcon onClick={openCart} />
           <button
             onClick={toggleMenu}
             className="p-2 rounded-md text-white hover:bg-white/10 transition-colors"
@@ -119,6 +164,19 @@ const Header = () => {
           </nav>
         </div>
       )}
+
+      {/* Modales */}
+      <CartModal 
+        isOpen={isCartOpen}
+        onClose={closeCart}
+        onCheckout={openCheckout}
+      />
+
+      <CheckoutModal
+        isOpen={isCheckoutOpen}
+        onClose={closeCheckout}
+        onBackToCart={handleBackToCart}
+      />
     </header>
   );
 };

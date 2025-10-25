@@ -1,4 +1,4 @@
-
+// app/components/CheckoutModal.tsx
 import { useState, useEffect } from 'react';
 import { useCart } from '~/hooks/useCart';
 

@@ -1,5 +1,6 @@
+// app/components/CartModal.tsx
 import { useEffect, useRef } from 'react';
-import { useCart } from '~/hooks/useCart';
+import { useCart, type CartItem } from '~/hooks/useCart';
 
 interface CartModalProps {
   isOpen: boolean;
@@ -13,12 +14,10 @@ export default function CartModal({ isOpen, onClose, onCheckout }: CartModalProp
     totalItems,
     totalPrice,
     removeItem,
-    incrementQuantity,
-    decrementQuantity,
     clearCart,
+    updateItemQuantity,
   } = useCart();
 
-  // foco inicial en botón cerrar
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
@@ -29,7 +28,6 @@ export default function CartModal({ isOpen, onClose, onCheckout }: CartModalProp
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
-      // intentamos enfocar el botón cerrar al abrir
       setTimeout(() => closeBtnRef.current?.focus(), 0);
     }
 
@@ -39,13 +37,29 @@ export default function CartModal({ isOpen, onClose, onCheckout }: CartModalProp
     };
   }, [isOpen, onClose]);
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
   };
 
   const handleCheckout = () => {
-    onClose();
+    console.log('🛒 CartModal - Procediendo al checkout');
     onCheckout();
+  };
+
+  const incrementQuantity = (id: string) => {
+    const item = items.find(item => item.id === id);
+    if (item) {
+      updateItemQuantity(id, item.quantity + 1);
+    }
+  };
+
+  const decrementQuantity = (id: string) => {
+    const item = items.find(item => item.id === id);
+    if (item && item.quantity > 1) {
+      updateItemQuantity(id, item.quantity - 1);
+    } else if (item) {
+      removeItem(id);
+    }
   };
 
   if (!isOpen) return null;
@@ -56,10 +70,8 @@ export default function CartModal({ isOpen, onClose, onCheckout }: CartModalProp
     <div
       className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
       onClick={handleBackdropClick}
-      // Accesibilidad
       role="presentation"
     >
-      {/* Contenedor responsive del “panel” */}
       <div
         role="dialog"
         aria-modal="true"
@@ -117,13 +129,11 @@ export default function CartModal({ isOpen, onClose, onCheckout }: CartModalProp
         {/* Footer con total y botones */}
         {items.length > 0 && (
           <div className="border-t p-4 space-y-4">
-            {/* Total */}
             <div className="flex justify-between items-center text-lg font-semibold">
               <span>Total:</span>
               <span>${totalPrice.toFixed(2)}</span>
             </div>
 
-            {/* Botones de acción */}
             <div className="flex gap-3">
               <button
                 onClick={() => {
@@ -148,21 +158,12 @@ export default function CartModal({ isOpen, onClose, onCheckout }: CartModalProp
   );
 }
 
-/* ------------------ Item del carrito ------------------ */
-
+// Componente CartItem
 interface CartItemProps {
-  item: {
-    id: string | number;
-    name: string;
-    price: number;
-    quantity: number;
-    image: string;
-    size?: string;
-    color?: string;
-  };
-  onRemove: (id: string | number) => void;
-  onIncrement: (id: string | number) => void;
-  onDecrement: (id: string | number) => void;
+  item: CartItem;
+  onRemove: (id: string) => void;
+  onIncrement: (id: string) => void;
+  onDecrement: (id: string) => void;
 }
 
 function CartItem({ item, onRemove, onIncrement, onDecrement }: CartItemProps) {
@@ -170,7 +171,7 @@ function CartItem({ item, onRemove, onIncrement, onDecrement }: CartItemProps) {
     <div className="flex gap-3 p-3 bg-gray-50 rounded-lg">
       {/* Imagen */}
       <img
-        src={item.image}
+        src={item.image || '/placeholder-image.jpg'}
         alt={item.name}
         className="w-16 h-16 object-cover rounded-md flex-shrink-0"
       />
@@ -192,7 +193,6 @@ function CartItem({ item, onRemove, onIncrement, onDecrement }: CartItemProps) {
           </span>
 
           <div className="flex items-center gap-2">
-            {/* - */}
             <button
               onClick={() => onDecrement(item.id)}
               className="w-7 h-7 flex items-center justify-center rounded
@@ -208,7 +208,6 @@ function CartItem({ item, onRemove, onIncrement, onDecrement }: CartItemProps) {
 
             <span className="w-8 text-center font-medium">{item.quantity}</span>
 
-            {/* + */}
             <button
               onClick={() => onIncrement(item.id)}
               className="w-7 h-7 flex items-center justify-center rounded
@@ -220,7 +219,6 @@ function CartItem({ item, onRemove, onIncrement, onDecrement }: CartItemProps) {
               </svg>
             </button>
 
-            {/* eliminar */}
             <button
               onClick={() => onRemove(item.id)}
               className="w-7 h-7 flex items-center justify-center rounded text-gray-400 hover:text-red-500 transition-colors"
