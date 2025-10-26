@@ -6,19 +6,19 @@ const slides = [
     title: 'New Drops',
     subtitle: 'From $100',
     url: 'https://www.staycoldapparel.com/cdn/shop/files/MarrowofEden_black_-OversizedT-Shirt_200GSM_1.jpg',
-    ref: '/Model-3',
+    ref: '/catalog',
   },
   {
     title: 'Hoodies',
     subtitle: 'From $100',
     url: 'https://www.staycoldapparel.com/cdn/shop/files/DeadBloom_Acid_-OversizedHoodie_350GSM_7.jpg',
-    ref: '/Model-X',
+    ref: '/catalog',
   },
   {
     title: 'Jackets',
     subtitle: 'From $200',
     url: 'https://www.staycoldapparel.com/cdn/shop/files/Grimfall_HalfHalf_-CargoShort_260GSM_3copy-2.jpg',
-    ref: '/Model-S',
+    ref: '/catalog',
   },
 ];
 

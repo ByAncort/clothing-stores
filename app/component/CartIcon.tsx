@@ -48,7 +48,7 @@ const CartIcon: React.FC<CartIconProps> = ({ onClick, className = "" }) => {
         }
       >
         <svg
-          className="w-6 h-6 text-gray-900 dark:text-white"
+          className="w-6 h-6 text-white"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24" height="24" fill="none" viewBox="0 0 24 24"

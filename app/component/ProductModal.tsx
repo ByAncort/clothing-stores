@@ -116,7 +116,9 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
               >
                 Añadir al Carrito
               </button>
-              <button className="flex-1 border border-gray-300 text-gray-900 py-3 rounded-lg font-medium hover:border-gray-500 transition-colors">
+              <button className="flex-1 border border-gray-300 text-gray-900 py-3 rounded-lg font-medium hover:border-gray-500 transition-colors"
+              onClick={handleAddToCart} 
+              >
                 Comprar Ahora
               </button>
             </div>

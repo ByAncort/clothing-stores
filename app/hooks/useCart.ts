@@ -1,90 +1,40 @@
-// app/hooks/useCart.ts
-import { create } from 'zustand';
 
-export interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image?: string;
+import { useState, useEffect } from 'react';
+import { cartService } from '~/service/CartService';
+import type { Producto } from '~/types/product';
+
+interface CartOptions {
   size?: string;
   color?: string;
 }
 
-interface CartStore {
-  items: CartItem[];
-  totalItems: number;
-  totalPrice: number;
-  addItem: (item: CartItem) => void;
-  removeItem: (id: string) => void;
-  clearCart: () => void;
-  updateItemQuantity: (id: string, quantity: number) => void;
-}
+export const useCart = () => {
+  const [cartItems, setCartItems] = useState(cartService.getItems());
+  const [totalItems, setTotalItems] = useState(cartService.getTotalItems());
+  const [totalPrice, setTotalPrice] = useState(cartService.getTotalPrice());
 
-export const useCart = create<CartStore>((set, get) => ({
-  items: [],
-  totalItems: 0,
-  totalPrice: 0,
-  
-  addItem: (item) => {
-    const { items } = get();
-    const existingItem = items.find(i => i.id === item.id);
-    
-    if (existingItem) {
-      const updatedItems = items.map(i =>
-        i.id === item.id ? { ...i, quantity: i.quantity + (item.quantity || 1) } : i
-      );
-      set({
-        items: updatedItems,
-        totalItems: updatedItems.reduce((sum, i) => sum + i.quantity, 0),
-        totalPrice: updatedItems.reduce((sum, i) => sum + (i.price * i.quantity), 0)
-      });
-    } else {
-      const newItems = [...items, { ...item, quantity: item.quantity || 1 }];
-      set({
-        items: newItems,
-        totalItems: newItems.reduce((sum, i) => sum + i.quantity, 0),
-        totalPrice: newItems.reduce((sum, i) => sum + (i.price * i.quantity), 0)
-      });
-    }
-  },
-  
-  removeItem: (id) => {
-    const { items } = get();
-    const updatedItems = items.filter(i => i.id !== id);
-    set({
-      items: updatedItems,
-      totalItems: updatedItems.reduce((sum, i) => sum + i.quantity, 0),
-      totalPrice: updatedItems.reduce((sum, i) => sum + (i.price * i.quantity), 0)
+  useEffect(() => {
+    const unsubscribe = cartService.subscribe((items) => {
+      setCartItems([...items]);
+      setTotalItems(cartService.getTotalItems());
+      setTotalPrice(cartService.getTotalPrice());
     });
-  },
-  
-  clearCart: () => {
-    set({
-      items: [],
-      totalItems: 0,
-      totalPrice: 0
-    });
-  },
 
-  updateItemQuantity: (id: string, quantity: number) => {
-    const { items } = get();
-    if (quantity <= 0) {
-      const updatedItems = items.filter(i => i.id !== id);
-      set({
-        items: updatedItems,
-        totalItems: updatedItems.reduce((sum, i) => sum + i.quantity, 0),
-        totalPrice: updatedItems.reduce((sum, i) => sum + (i.price * i.quantity), 0)
-      });
-    } else {
-      const updatedItems = items.map(i =>
-        i.id === id ? { ...i, quantity } : i
-      );
-      set({
-        items: updatedItems,
-        totalItems: updatedItems.reduce((sum, i) => sum + i.quantity, 0),
-        totalPrice: updatedItems.reduce((sum, i) => sum + (i.price * i.quantity), 0)
-      });
-    }
-  }
-}));
+    return unsubscribe;
+  }, []);
+
+  return {
+    items: cartItems,
+    totalItems,
+    totalPrice,
+    addItem: (product: Producto, options?: CartOptions) => cartService.addItem(product, options),
+    removeItem: (itemId: string | number) => cartService.removeItem(itemId),
+    updateQuantity: (itemId: string | number, quantity: number) => 
+      cartService.updateQuantity(itemId, quantity),
+    incrementQuantity: (itemId: string | number) => cartService.incrementQuantity(itemId),
+    decrementQuantity: (itemId: string | number) => cartService.decrementQuantity(itemId),
+    clearCart: () => cartService.clear(),
+    isInCart: (productId: number, size?: string, color?: string) => 
+      cartService.isInCart(productId, size, color)
+  };
+};
