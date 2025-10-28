@@ -1,31 +1,20 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import Login from "~/pages/login/login";
-import Header from '~/component/Header';
-
-
-jest.mock("~/component/Header", () => ({
-  __esModule: true,
-  default: () => <div data-testid="header">Header Component</div>,
-}));
-
-jest.mock("~/component/Footer", () => ({
-  __esModule: true,
-  default: () => <div data-testid="footer">Footer Component</div>,
-}));
-
-jest.mock("~/component/login", () => ({
-  __esModule: true,
-  default: () => <div data-testid="login-component">Login Component</div>,
-}));
+import { MemoryRouter } from "react-router-dom";
 
 describe("Login Page", () => {
-  test("renders Header, LoginComponent and Footer correctly", () => {
-    render(<Login />);
+  it("renders Header, LoginComponent and Footer correctly", () => {
+    const Login = require("~/pages/login/login").default;
+
+    render(
+      <MemoryRouter>
+        <Login />
+      </MemoryRouter>
+    );
 
 
-    expect(screen.getByTestId("header")).toBeInTheDocument();
-    expect(screen.getByTestId("login-component")).toBeInTheDocument();
-    expect(screen.getByTestId("footer")).toBeInTheDocument();
+    expect(screen.getByTestId("header")).toBeTruthy();
+    expect(screen.getByTestId("login-component")).toBeTruthy();
+    expect(screen.getByTestId("footer")).toBeTruthy();
   });
 });

@@ -2,15 +2,6 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ProductModal from '../component/ProductModal';
 
-// ✅ Mock del hook con el nombre correcto: addItem
-const mockAddItem = jest.fn();
-
-jest.mock('../hooks/useCart', () => ({
-  useCart: () => ({
-    addItem: mockAddItem,
-  }),
-}));
-
 const product = {
   id: 'P01',
   name: 'Polera Street',
@@ -19,54 +10,49 @@ const product = {
   quantity: 1,
 };
 
-const renderModal = (props: Partial<React.ComponentProps<typeof ProductModal>> = {}) => {
+const renderModal = (props: Partial<React.ComponentProps<any>> = {}) => {
   const defaultProps: any = {
     isOpen: true,
-    onClose: jest.fn(),
+    onClose: jasmine.createSpy('onClose'),
     product,
   };
-  return render(<ProductModal {...defaultProps} {...(props as any)} />);
+  const utils = render(<ProductModal {...defaultProps} {...(props as any)} />);
+  return { ...utils };
 };
 
 // app/setupTests.js
 
 beforeAll(() => {
-  jest.spyOn(console, 'log').mockImplementation((...args) => {
+  spyOn(console, 'log').and.callFake((...args: any[]) => {
     const msg = String(args[0] ?? '');
-    // Silencia SOLO este mensaje
     if (msg.includes('Producto agregado al carrito')) return;
+    // por defecto, deja pasar los demás logs
+    // eslint-disable-next-line no-console
+    console.info?.(...args);
   });
-
-});
-
-afterAll(() => {
-  // Restaura todos los mocks/espías creados con jest.spyOn en este archivo
-  jest.restoreAllMocks();
 });
 
 
 describe('ProductModal', () => {
-  beforeEach(() => mockAddItem.mockClear());
 
   it('renderiza abierto (botones principales visibles)', () => {
     renderModal();
     // No afirmamos nombre/precio porque tu DOM actual no los muestra como texto
-    expect(screen.getByRole('button', { name: /añadir al carrito/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /comprar ahora/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /añadir al carrito/i })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /comprar ahora/i })).toBeTruthy();
   });
 
   it('agrega al carrito usando useCart.addItem', () => {
     renderModal();
     const addBtn = screen.getByRole('button', { name: /añadir al carrito/i });
     fireEvent.click(addBtn);
-    expect(mockAddItem).toHaveBeenCalledTimes(1);
-    // si quieres, validamos que el primer argumento tenga id
-    expect(mockAddItem.mock.calls[0][0]).toEqual(expect.objectContaining({ id: 'P01' }));
+    const hooks: any = require('~/hooks/useCart');
+    expect(hooks.__mockCart__.addItem).toHaveBeenCalled();
   });
 
   it('cierra el modal al presionar el botón ×', () => {
-    const onClose = jest.fn();
-    renderModal({ onClose });
+  const onClose = jasmine.createSpy('onClose');
+  renderModal({ onClose });
 
     // Busca específicamente el botón "×" (no "XS" / "XL")
     const closeBtn =

@@ -1,65 +1,44 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import  Catalog  from "../pages/catalog/catalog";
-import { BrowserRouter, useParams } from "react-router-dom";
-import Header from '~/component/Header';
-
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useParams: jest.fn(),
-}));
-
-jest.mock("~/component/Header", () => ({
-  __esModule: true,
-  default: () => <div data-testid="header">Header</div>,
-}));
-
-jest.mock("~/component/ProductList", () => ({
-  __esModule: true,
-  default: () => <div data-testid="product-list">ProductList</div>,
-}));
-
-jest.mock("~/component/Footer", () => ({
-  __esModule: true,
-  default: () => <div data-testid="footer">Footer</div>,
-}));
+import { MemoryRouter, Routes, Route } from "react-router-dom";
 
 describe("Catalog Component", () => {
-  const renderWithRouter = (component) =>
-    render(<BrowserRouter>{component}</BrowserRouter>);
+  let Catalog;
 
   beforeEach(() => {
-    useParams.mockReturnValue({});
+    // requerir el componente después de aplicar mocks
+    Catalog = require("../pages/catalog/catalog").default;
   });
 
-  test("renders Header, ProductList y Footer", () => {
-    renderWithRouter(<Catalog />);
-    expect(screen.getByTestId("header")).toBeInTheDocument();
-    expect(screen.getByTestId("product-list")).toBeInTheDocument();
-    expect(screen.getByTestId("footer")).toBeInTheDocument();
+  const renderWithRouter = ({ path = "/catalog", route = "/catalog" } = {}) => {
+    return render(
+      <MemoryRouter initialEntries={[path]}>
+        <Routes>
+          <Route path={route} element={<Catalog />} />
+        </Routes>
+      </MemoryRouter>
+    );
+  };
+
+  it("should render Header, ProductList and Footer", () => {
+    renderWithRouter();
+    expect(screen.getByTestId("header")).toBeTruthy();
+    expect(screen.getByTestId("product-list")).toBeTruthy();
+    expect(screen.getByTestId("footer")).toBeTruthy();
   });
 
-  test("muestra todos los productos si no hay category param", () => {
-    renderWithRouter(<Catalog />);
-    expect(screen.getByTestId("product-list")).toBeInTheDocument();
+  it("should show all products when no category param", () => {
+    renderWithRouter({ path: "/catalog", route: "/catalog" });
+    expect(screen.getByTestId("product-list")).toBeTruthy();
   });
 
-  test("filtra productos por categoría cuando se proporciona category", () => {
-    useParams.mockReturnValue({ category: "shoes" });
-    renderWithRouter(<Catalog />);
-    expect(screen.getByTestId("product-list")).toBeInTheDocument();
+  it("should filter products by category when provided", () => {
+    renderWithRouter({ path: "/catalog/shoes", route: "/catalog/:category" });
+    expect(screen.getByTestId("product-list")).toBeTruthy();
   });
 
-  test("filtra productos por categoría sin importar mayúsculas/minúsculas", () => {
-    useParams.mockReturnValue({ category: "SHOES" });
-    renderWithRouter(<Catalog />);
-    expect(screen.getByTestId("product-list")).toBeInTheDocument();
-  });
-
-  test("muestra el título y subtítulo correctamente", () => {
-    renderWithRouter(<Catalog />);
-    // Ajusta los testids si tu componente tiene títulos reales
-    // expect(screen.getByText(/Título/i)).toBeInTheDocument();
-    // expect(screen.getByText(/Subtítulo/i)).toBeInTheDocument();
+  it("should filter products by category case-insensitive", () => {
+    renderWithRouter({ path: "/catalog/SHOES", route: "/catalog/:category" });
+    expect(screen.getByTestId("product-list")).toBeTruthy();
   });
 });

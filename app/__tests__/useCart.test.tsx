@@ -1,23 +1,15 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
-import * as useLS from '../hooks/useLocalStorage';
 import { useCart } from '../hooks/useCart';
 
 const byId = (arr: any[], id: string | number) =>
   arr.find((i) => String(i.id) === String(id));
 
 describe('useCart', () => {
-  beforeEach(() => {
-    jest.restoreAllMocks();
-  });
 
   it('agrega, incrementa, decrementa, elimina y limpia', () => {
-    // Carrito parte vacío; simulamos useLocalStorage
-    jest.spyOn(useLS, 'useLocalStorage').mockImplementation(() => {
-      const [value, setValue] = React.useState<any[]>([]);
-      const remove = jest.fn();
-      return [value, setValue, remove] as any;
-    });
+    // Carrito parte vacío; el alias de useLocalStorage.mock ya devuelve [] y loaded=true.
+    // Si fuese necesario iniciar con valores, podríamos usar: require('~/hooks/useLocalStorage').__seedLocalStorage__([ ... ], true);
 
     const { result } = renderHook(() => useCart());
     const anyResult: any = result.current;
@@ -62,6 +54,7 @@ describe('useCart', () => {
     act(() => {
       result.current.clearCart();
     });
-    expect(result.current.items).toHaveLength(0);
+  expect(Array.isArray(result.current.items)).toBe(true);
+    expect(result.current.items.length).toBe(0);
   });
 });

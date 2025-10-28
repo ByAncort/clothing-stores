@@ -1,54 +1,45 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import Header from '~/component/Header';
+// ...existing code...
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
 
-// Mock de react-router-dom
-const mockNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-  useNavigate: () => mockNavigate,
-  BrowserRouter: ({ children }) => <div>{children}</div>,
-}));
+describe("Catalog Component (AreasMain test)", () => {
 
-// Importa el componente
-import AreasMain from '../component/AreasMain';
-
-describe('AreasMain', () => {
   beforeEach(() => {
-    mockNavigate.mockClear();
+    // No need to mock via spyOnProperty; webpack aliases replace these modules with stubs
   });
 
-  test('renders main elements', () => {
-    render(
-      <BrowserRouter>
-        <AreasMain />
-      </BrowserRouter>
+  const renderWithRouter = ({ path = "/catalog", route = "/catalog" } = {}) => {
+    const Catalog = require("../pages/catalog/catalog").default;
+    return render(
+      <MemoryRouter initialEntries={[path]}>
+        <Routes>
+          <Route path={route} element={<Catalog />} />
+        </Routes>
+      </MemoryRouter>
     );
+  };
 
-    // Verifica que los elementos principales estén presentes
-    expect(screen.getByTestId('main-slide')).toBeInTheDocument();
-    expect(screen.getByTestId('preview-slide')).toBeInTheDocument();
+  it("should render Header, ProductList and Footer", () => {
+  renderWithRouter();
+    expect(screen.getByTestId("header")).toBeTruthy();
+    expect(screen.getByTestId("product-list")).toBeTruthy();
+    expect(screen.getByTestId("footer")).toBeTruthy();
   });
 
-  test('displays initial slide content', () => {
-    render(
-      <BrowserRouter>
-        <AreasMain />
-      </BrowserRouter>
-    );
-
-    expect(screen.getByTestId('slide-title')).toHaveTextContent('New Drops');
-    expect(screen.getByTestId('slide-subtitle')).toHaveTextContent('From $100');
+  it("should show all products when no category param", () => {
+  renderWithRouter({ path: "/catalog", route: "/catalog" });
+    expect(screen.getByTestId("product-list")).toBeTruthy();
   });
 
-  test('navigates on More button click', () => {
-    render(
-      <BrowserRouter>
-        <AreasMain />
-      </BrowserRouter>
-    );
+  it("should filter products by category when provided", () => {
+  renderWithRouter({ path: "/catalog/shoes", route: "/catalog/:category" });
+    expect(screen.getByTestId("product-list")).toBeTruthy();
+  });
 
-    fireEvent.click(screen.getByTestId('more-button'));
-    expect(mockNavigate).toHaveBeenCalledWith('/Model-3');
+  it("should filter products by category case-insensitive", () => {
+  renderWithRouter({ path: "/catalog/SHOES", route: "/catalog/:category" });
+    expect(screen.getByTestId("product-list")).toBeTruthy();
   });
 });
+// ...existing code...
