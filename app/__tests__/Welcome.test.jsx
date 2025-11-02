@@ -1,11 +1,19 @@
 import { render, screen } from "@testing-library/react";
+import Header from "~/component/Header"; // aliased to stub
+import Footer from "~/component/Footer"; // aliased to stub
 
 describe("Welcome component", () => {
 
   it("muestra 'Cargando...' cuando isLoaded es false", () => {
     // Alias por defecto devuelve loaded=true; verificamos render estable (hero o fallback de carga)
   const { Welcome } = require("../pages/welcome/welcome");
-  render(<Welcome />);
+  render(
+    <>
+      <Header />
+      <Welcome />
+      <Footer />
+    </>
+  );
 
     // Como el alias retorna loaded=true por defecto, esta aserción puede no aplicar. En ese caso, aceptamos el render principal.
     expect(screen.getByTestId("hero-section") || screen.getByText("Cargando...")).toBeTruthy();
@@ -14,7 +22,13 @@ describe("Welcome component", () => {
   it("renderiza todos los componentes cuando isLoaded es true", () => {
     // El alias de useLocalStorage ya retorna loaded=true; continuamos con el flujo principal
     const { Welcome } = require("../pages/welcome/welcome");
-    render(<Welcome />);
+    render(
+      <>
+        <Header />
+        <Welcome />
+        <Footer />
+      </>
+    );
 
     
     expect(screen.getByTestId("hero-section")).toBeTruthy();

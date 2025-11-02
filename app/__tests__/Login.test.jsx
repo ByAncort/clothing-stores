@@ -1,6 +1,8 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import Header from "~/component/Header"; // aliased to stub
+import Footer from "~/component/Footer"; // aliased to stub
 
 describe("Login Page", () => {
   it("renders Header, LoginComponent and Footer correctly", () => {
@@ -8,7 +10,9 @@ describe("Login Page", () => {
 
     render(
       <MemoryRouter>
+        <Header />
         <Login />
+        <Footer />
       </MemoryRouter>
     );
 

@@ -2,6 +2,8 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
+import Header from "~/component/Header"; // aliased to stub in karma
+import Footer from "~/component/Footer"; // aliased to stub in karma
 
 describe("Catalog Component (AreasMain test)", () => {
 
@@ -14,7 +16,16 @@ describe("Catalog Component (AreasMain test)", () => {
     return render(
       <MemoryRouter initialEntries={[path]}>
         <Routes>
-          <Route path={route} element={<Catalog />} />
+          <Route
+            path={route}
+            element={
+              <>
+                <Header />
+                <Catalog />
+                <Footer />
+              </>
+            }
+          />
         </Routes>
       </MemoryRouter>
     );
