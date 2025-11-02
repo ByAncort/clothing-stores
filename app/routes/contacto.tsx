@@ -1,10 +1,9 @@
-import Catalog from "../pages/catalog/catalog";
 import * as Route from "react-router";
 import Contacto from "~/pages/contacto/contacto";
 
-export function meta({}: Route.MetaArgs) {
+export function meta(_: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
+    { title: "stay cold apparel" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }

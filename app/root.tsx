@@ -2,6 +2,8 @@
 import { Links, Meta, Outlet, Scripts } from "react-router";
 import type { Route } from "./+types/root";
 import "./app.css";
+import Header from "~/component/Header";
+import Footer from "~/component/Footer";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -18,7 +20,7 @@ export const links: Route.LinksFunction = () => [
 
 export const meta: Route.MetaFunction = () => {
   return [
-    { title: "Clothing Stores" },
+    { title: "stay cold apparel" },
     { name: "description", content: "Tienda de ropa premium" },
     { charset: "utf-8" },
     { name: "viewport", content: "width=device-width,initial-scale=1" },
@@ -33,7 +35,18 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <main className="relative w-full min-h-screen overflow-y-auto overflow-x-hidden scroll-smooth bg-gradient-to-br from-neutral-900 to-stone-800">
+          <div className="snap-center">
+            <Header />
+          </div>
+
+          {/* Contenido de las rutas hijas */}
+          <Outlet />
+
+          <div className="snap-center">
+            <Footer />
+          </div>
+        </main>
         <Scripts />
       </body>
     </html>

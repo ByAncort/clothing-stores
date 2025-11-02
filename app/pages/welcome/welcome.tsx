@@ -1,14 +1,9 @@
 
 import AreasMain from "~/component/AreasMain";
 import HeroSection from "~/component/HeroSelection";
-import Header from "~/component/Header";
-import ClientCarousel from "~/component/ClientCarousel";
 import CardVentas from "~/component/CardVentas";
-import Footer from "~/component/Footer";
-
 import type { Producto } from "~/types/product";
 import Mosaico from "~/component/Mosaico";
-import { cartService } from "~/service/CartService";
 import { useLocalStorage } from "~/hooks/useLocalStorage";
 
 
@@ -22,7 +17,7 @@ const productosIniciales: Producto[] = [
     id: 1,
     nombre: "Dead Bloom (Acid) - Oversized Hoodie",
     tipo: "Oversized Hoodie",
-    precio: 119.90,
+  precio: 119.9,
     colores: 1,
     calificacion: 5,
     reseñas: 2,
@@ -37,7 +32,7 @@ const productosIniciales: Producto[] = [
     id: 2,
     nombre: "Storm (Camo) - Shades",
     tipo: "Shades",
-    precio: 59.90,
+  precio: 59.9,
     colores: 1,
     calificacion: 5,
     reseñas: 5,
@@ -53,7 +48,7 @@ const productosIniciales: Producto[] = [
     id: 3,
     nombre: "Think Twice - Oversized T-Shirt",
     tipo: "Oversized T-Shirt",
-    precio: 49.90,
+  precio: 49.9,
     colores: 3,
     calificacion: 4.5,
     reseñas: 7,
@@ -68,7 +63,7 @@ const productosIniciales: Producto[] = [
     id: 4,
     nombre: "Reign of Blood - Heavy Oversized Hoodie",
     tipo: "Oversized Hoodie",
-    precio: 119.90,
+  precio: 119.9,
     colores: 2,
     calificacion: 5,
     reseñas: 3,
@@ -84,7 +79,7 @@ const productosIniciales: Producto[] = [
     id: 5,
     nombre: "Nocturnal Oath - All Over Print T-Shirt",
     tipo: "Oversized T-Shirt",
-    precio: 54.90,
+  precio: 54.9,
     colores: 2,
     calificacion: 4.8,
     reseñas: 12,
@@ -99,7 +94,7 @@ const productosIniciales: Producto[] = [
     id: 6,
     nombre: "Grimfall Half Half - Cargo Short",
     tipo: "Cargo Short",
-    precio: 79.90,
+  precio: 79.9,
     colores: 1,
     calificacion: 4.7,
     reseñas: 8,
@@ -115,7 +110,7 @@ const productosIniciales: Producto[] = [
     id: 7,
     nombre: "Shadow Realm - Beanie",
     tipo: "Beanie",
-    precio: 34.90,
+  precio: 34.9,
     colores: 4,
     calificacion: 4.9,
     reseñas: 15,
@@ -130,7 +125,7 @@ const productosIniciales: Producto[] = [
     id: 8,
     nombre: "Eternal Night - Jogger Pants",
     tipo: "Jogger Pants",
-    precio: 89.90,
+  precio: 89.9,
     colores: 3,
     calificacion: 4.6,
     reseñas: 6,
@@ -143,33 +138,26 @@ const productosIniciales: Producto[] = [
   }
 ];
 
-  const [productosMasVendidos, setProductosMasVendidos, isLoaded] = useLocalStorage<Producto[]>(
+  const [productosMasVendidos, , isLoaded] = useLocalStorage<Producto[]>(
     "productosMasVendidos", 
     productosIniciales
   );
 
   if (!isLoaded) {
     return (
-      <main className="relative w-full h-screen overflow-y-auto overflow-x-hidden scroll-smooth bg-gradient-to-br from-neutral-900 to-stone-800">
-        <div className="flex justify-center items-center h-full">
-          <div className="text-white">Cargando...</div>
-        </div>
-      </main>
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="text-white">Cargando...</div>
+      </div>
     );
   }
 
   return (
-    
-    <main className=" relative w-full h-screen overflow-y-auto overflow-x-hidden scroll-smooth bg-gradient-to-br from-neutral-900 to-stone-800
-">
+    <>
       <div className="snap-center">
         <HeroSection />
       </div>
       <div className="snap-center">
         <AreasMain />
-      </div>
-      <div className="snap-center">
-        <Header />
       </div>
       <div className="snap-center max-w-[1600px] mx-auto">
         <CardVentas productos={productosMasVendidos} />
@@ -179,9 +167,6 @@ const productosIniciales: Producto[] = [
       </div>
       <div className="snap-center">
       </div>
-      <div className="snap-center">
-        <Footer />
-      </div>
-    </main>
+    </>
   );
 }

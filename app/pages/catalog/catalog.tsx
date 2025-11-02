@@ -1,6 +1,4 @@
 import { useParams } from "react-router";
-import Footer from "~/component/Footer";
-import Header from "~/component/Header";
 import ProductList from "~/component/ProductList";
 import type { Producto } from "~/types/product";
 
@@ -10,7 +8,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 1,
         nombre: "Dead Bloom (Acid) - Oversized Hoodie",
         tipo: "Oversized Hoodie",
-        precio: 119.90,
+  precio: 119.9,
         colores: 1,
         calificacion: 5,
         reseñas: 2,
@@ -25,7 +23,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 2,
         nombre: "Storm (Camo) - Shades",
         tipo: "Shades",
-        precio: 59.90,
+  precio: 59.9,
         colores: 1,
         calificacion: 5,
         reseñas: 5,
@@ -41,7 +39,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 3,
         nombre: "Think Twice - Oversized T-Shirt",
         tipo: "Oversized T-Shirt",
-        precio: 49.90,
+  precio: 49.9,
         colores: 3,
         calificacion: 4.5,
         reseñas: 7,
@@ -56,7 +54,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 4,
         nombre: "Reign of Blood - Heavy Oversized Hoodie",
         tipo: "Oversized Hoodie",
-        precio: 119.90,
+  precio: 119.9,
         colores: 2,
         calificacion: 5,
         reseñas: 3,
@@ -72,7 +70,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 5,
         nombre: "Nocturnal Oath - All Over Print T-Shirt",
         tipo: "Oversized T-Shirt",
-        precio: 54.90,
+  precio: 54.9,
         colores: 2,
         calificacion: 4.8,
         reseñas: 12,
@@ -87,7 +85,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 6,
         nombre: "Grimfall Half Half - Cargo Short",
         tipo: "Cargo Short",
-        precio: 79.90,
+  precio: 79.9,
         colores: 1,
         calificacion: 4.7,
         reseñas: 8,
@@ -103,7 +101,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 7,
         nombre: "Shadow Realm - Beanie",
         tipo: "Beanie",
-        precio: 34.90,
+  precio: 34.9,
         colores: 4,
         calificacion: 4.9,
         reseñas: 15,
@@ -118,7 +116,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 8,
         nombre: "Eternal Night - Jogger Pants",
         tipo: "Jogger Pants",
-        precio: 89.90,
+  precio: 89.9,
         colores: 3,
         calificacion: 4.6,
         reseñas: 6,
@@ -133,7 +131,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 9,
         nombre: "Urban Classic - T-Shirt",
         tipo: "Oversized T-Shirt",
-        precio: 39.90,
+  precio: 39.9,
         colores: 3,
         calificacion: 4.6,
         reseñas: 6,
@@ -148,7 +146,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 10,
         nombre: "Winter King - Heavy Hoodie",
         tipo: "Oversized Hoodie",
-        precio: 129.90,
+  precio: 129.9,
         colores: 2,
         calificacion: 4.8,
         reseñas: 9,
@@ -163,7 +161,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 1,
         nombre: "Dead Bloom (Acid) - Oversized Hoodie",
         tipo: "Oversized Hoodie",
-        precio: 119.90,
+  precio: 119.9,
         colores: 1,
         calificacion: 5,
         reseñas: 2,
@@ -178,7 +176,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 2,
         nombre: "Storm (Camo) - Shades",
         tipo: "Shades",
-        precio: 59.90,
+  precio: 59.9,
         colores: 1,
         calificacion: 5,
         reseñas: 5,
@@ -194,7 +192,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 3,
         nombre: "Think Twice - Oversized T-Shirt",
         tipo: "Oversized T-Shirt",
-        precio: 49.90,
+  precio: 49.9,
         colores: 3,
         calificacion: 4.5,
         reseñas: 7,
@@ -209,7 +207,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 4,
         nombre: "Reign of Blood - Heavy Oversized Hoodie",
         tipo: "Oversized Hoodie",
-        precio: 119.90,
+  precio: 119.9,
         colores: 2,
         calificacion: 5,
         reseñas: 3,
@@ -225,7 +223,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 5,
         nombre: "Nocturnal Oath - All Over Print T-Shirt",
         tipo: "Oversized T-Shirt",
-        precio: 54.90,
+  precio: 54.9,
         colores: 2,
         calificacion: 4.8,
         reseñas: 12,
@@ -240,7 +238,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 6,
         nombre: "Grimfall Half Half - Cargo Short",
         tipo: "Cargo Short",
-        precio: 79.90,
+  precio: 79.9,
         colores: 1,
         calificacion: 4.7,
         reseñas: 8,
@@ -256,7 +254,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 7,
         nombre: "Shadow Realm - Beanie",
         tipo: "Beanie",
-        precio: 34.90,
+  precio: 34.9,
         colores: 4,
         calificacion: 4.9,
         reseñas: 15,
@@ -271,7 +269,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 8,
         nombre: "Eternal Night - Jogger Pants",
         tipo: "Jogger Pants",
-        precio: 89.90,
+  precio: 89.9,
         colores: 3,
         calificacion: 4.6,
         reseñas: 6,
@@ -286,7 +284,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 9,
         nombre: "Urban Classic - T-Shirt",
         tipo: "Oversized T-Shirt",
-        precio: 39.90,
+  precio: 39.9,
         colores: 3,
         calificacion: 4.6,
         reseñas: 6,
@@ -301,7 +299,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
         id: 10,
         nombre: "Winter King - Heavy Hoodie",
         tipo: "Oversized Hoodie",
-        precio: 129.90,
+  precio: 129.9,
         colores: 2,
         calificacion: 4.8,
         reseñas: 9,
@@ -317,7 +315,7 @@ export default function Catalog() { // Cambié export function Catalog por expor
     const { category } = useParams();
     
     // Función para normalizar categorías (evitar problemas de mayúsculas/minúsculas)
-    const normalizeCategory = (cat: string) => cat.toLowerCase().replace(/\s+/g, '-');
+  const normalizeCategory = (cat: string) => cat.toLowerCase().replaceAll(/\s+/g, '-');
     const productosFiltrados = category
     ? todosLosProductos.filter(producto =>
         normalizeCategory(producto.categoria)
@@ -327,21 +325,13 @@ export default function Catalog() { // Cambié export function Catalog por expor
     : todosLosProductos;
  
 
-    return (
-        <main className="relative w-full min-h-screen overflow-y-auto overflow-x-hidden scroll-smooth bg-gradient-to-br from-neutral-900 to-stone-800">
-            <div className="snap-center">
-                <Header/>
-            </div>
-            <div className="snap-center">
-                <ProductList 
-                    productos={productosFiltrados}
-                    titulo="No somos solo moda"
-                    subtitulo="Descubre los mejores productos del mercado"
-                />
-            </div>
-            <div className="snap-center">
-                <Footer/>
-            </div>
-        </main>
-    );
+  return (
+    <div className="snap-center">
+    <ProductList 
+      productos={productosFiltrados}
+      titulo="No somos solo moda"
+      subtitulo="Descubre los mejores productos del mercado"
+    />
+    </div>
+  );
 }

@@ -1,9 +1,9 @@
 import * as Route from "react-router";
 import { Welcome } from "../pages/welcome/welcome";
 
-export function meta({}: Route.MetaArgs) {
+export function meta(_: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
+    { title: "stay cold apparel" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
