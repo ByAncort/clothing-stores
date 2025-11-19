@@ -1,43 +1,107 @@
-import { useState } from "react"; //guardamos valores temporales
-import { useNavigate } from "react-router-dom"; //nos movemos entre las paginas
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-
-
+// Interface para la respuesta del login
+interface LoginResponse {
+  token: string;
+  tokenType: string;
+  issuedAt: string;
+  expiresAt: string;
+  username: string;
+  roles: Array<{
+    id: number;
+    name: string;
+    permissions: any[];
+  }>;
+  message: string | null;
+  _links: {
+    self: { href: string };
+    "validate-token": { href: string };
+  };
+}
 
 export default function Login() {
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const [showForgot, setShowForgot] = useState<boolean>(false);
 
-const [email, setEmail] = useState<string>(""); // almacena el correo
-const [password, setPassword] = useState<string>("");  // almacena la contraseña
-const [error, setError] = useState<string>(""); // muestra errores si faltan datos
-const [loading, setLoading] = useState<boolean>(false); // muestra un "cargando" opcional
-const navigate = useNavigate(); // permite redirigir a otra página
-const [showForgot, setShowForgot] = useState<boolean>(false);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
+    if (!username || !password) {
+      setError("⚠️ Debes ingresar tu usuario y contraseña.");
+      return;
+    }
 
-const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault(); // evita que se recargue la página
+    setError("");
+    setLoading(true);
 
-  if (!email || !password) {
-    setError("⚠️ Debes ingresar tu correo y contraseña.");
-    return;
-  }
+    try {
+      const response = await fetch('http://localhost:9010/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'accept': '*/*',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password
+        })
+      });
 
-  if (!email.includes("@")) {
-    setError("📧 El correo no es válido.");
-    return;
-  }
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || `Error ${response.status}: ${response.statusText}`);
+      }
 
-  setError("");
-  setLoading(true);
+      const data: LoginResponse = await response.json();
+      
+      // Guardar el token en localStorage
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('userData', JSON.stringify({
+        username: data.username,
+        roles: data.roles,
+        expiresAt: data.expiresAt
+      }));
 
-  // simulamos una espera de verificación
-  setTimeout(() => {
-    setLoading(false);
-    alert("✅ Inicio de sesión exitoso (simulado)");
-    navigate("/"); // puedes cambiar esta ruta según tu proyecto
-  }, 1500);
-};
- 
+      setLoading(false);
+      alert("✅ Inicio de sesión exitoso");
+      navigate("/");
+
+    } catch (error: any) {
+      setLoading(false);
+      setError(error.message || "❌ Error al iniciar sesión. Intenta nuevamente.");
+      console.error("Login error:", error);
+    }
+  };
+
+  // Función para recuperar contraseña
+  const handleForgotPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    if (!username) {
+      setError("⚠️ Ingresa tu usuario para recuperar la contraseña.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      // Simulación de envío de recuperación
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      alert(`📩 Se envió un enlace de recuperación para el usuario: ${username}`);
+      setShowForgot(false);
+      setLoading(false);
+      
+    } catch (error) {
+      setLoading(false);
+      setError("❌ Error al enviar el enlace de recuperación.");
+    }
+  };
 
   return (
     <>
@@ -50,34 +114,35 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
             </h3>
 
             <p className="text-gray-300 text-sm mb-4 text-center">
-              Ingresa tu correo para recibir un enlace de recuperación.
+              Ingresa tu usuario para recibir un enlace de recuperación.
             </p>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert(`📩 Se envió un enlace a ${email}`);
-                setShowForgot(false);
-              }}
-            >
+            <form onSubmit={handleForgotPassword}>
               <input
-                type="email"
-                placeholder="Tu correo registrado"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                placeholder="Tu usuario"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full mb-3 p-2 rounded text-black focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                required
               />
+
+              {error && <p className="text-red-400 text-sm mb-3">{error}</p>}
 
               <button
                 type="submit"
-                className="w-full bg-indigo-500 hover:bg-indigo-400 text-white py-2 rounded font-semibold"
+                disabled={loading}
+                className="w-full bg-indigo-500 hover:bg-indigo-400 disabled:bg-indigo-300 text-white py-2 rounded font-semibold"
               >
-                Enviar enlace
+                {loading ? "Enviando..." : "Enviar enlace"}
               </button>
 
               <button
                 type="button"
-                onClick={() => setShowForgot(false)} // 👈 vuelve al login
+                onClick={() => {
+                  setShowForgot(false);
+                  setError("");
+                }}
                 className="w-full mt-3 text-sm text-indigo-400 hover:text-indigo-300"
               >
                 ← Volver al inicio de sesión
@@ -93,7 +158,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
               {/* SVG LOGO */}
             </div>
             <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
-              Sign in to your account
+              Iniciar sesión en tu cuenta
             </h2>
           </div>
 
@@ -101,21 +166,22 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label
-                  htmlFor="email"
+                  htmlFor="username"
                   className="block text-sm/6 font-medium text-gray-100"
                 >
-                  Email address
+                  Usuario
                 </label>
                 <div className="mt-2">
                   <input
-                    id="email"
-                    name="email"
-                    type="email"
+                    id="username"
+                    name="username"
+                    type="text"
                     required
-                    autoComplete="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                    placeholder="Ingresa tu usuario"
                   />
                 </div>
               </div>
@@ -126,7 +192,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
                     htmlFor="password"
                     className="block text-sm/6 font-medium text-gray-100"
                   >
-                    Password
+                    Contraseña
                   </label>
                   <div className="text-sm">
                     <button
@@ -134,7 +200,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
                       onClick={() => setShowForgot(true)}
                       className="font-semibold text-indigo-400 hover:text-indigo-300"
                     >
-                      Forgot password?
+                      ¿Olvidaste tu contraseña?
                     </button>
                   </div>
                 </div>
@@ -148,6 +214,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                    placeholder="Ingresa tu contraseña"
                   />
                 </div>
               </div>
@@ -157,9 +224,10 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
               <div>
                 <button
                   type="submit"
-                  className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                  disabled={loading}
+                  className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 disabled:bg-indigo-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                 >
-                  {loading ? "Ingresando..." : "Sign in"}
+                  {loading ? "Ingresando..." : "Iniciar sesión"}
                 </button>
               </div>
             </form>
@@ -169,4 +237,3 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     </>
   );
 }
-
