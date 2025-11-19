@@ -1,0 +1,14 @@
+com\staycold\msproductos\config\OpenApiConfig.class
+com\staycold\msproductos\dto\ProductoDTO.class
+com\staycold\msproductos\entity\Producto$ProductoBuilder.class
+com\staycold\msproductos\entity\Producto.class
+com\staycold\msproductos\controller\HomeController.class
+com\staycold\msproductos\MsProductosApplication.class
+com\staycold\msproductos\exception\NotFoundException.class
+com\staycold\msproductos\config\SecurityConfig.class
+com\staycold\msproductos\exception\GlobalExceptionHandler.class
+com\staycold\msproductos\service\ProductoService.class
+com\staycold\msproductos\mapper\ProductoMapper.class
+com\staycold\msproductos\dto\ProductoCreateDTO.class
+com\staycold\msproductos\repository\ProductoRepository.class
+com\staycold\msproductos\controller\ProductoController.class

@@ -1,0 +1,14 @@
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\config\OpenApiConfig.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\config\SecurityConfig.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\controller\HomeController.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\controller\ProductoController.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\dto\ProductoCreateDTO.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\dto\ProductoDTO.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\entity\Producto.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\exception\GlobalExceptionHandler.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\exception\NotFoundException.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\mapper\ProductoMapper.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\MsProductosApplication.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\repository\ProductoRepository.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\service\ProductoService.java
+C:\Users\pokex\Desktop\Microservicios Aparrel\ms-productos\src\main\java\com\staycold\msproductos\service\ProductoServiceTest.java

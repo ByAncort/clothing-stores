@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://productos-db:5432/productos_db
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+
