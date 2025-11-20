@@ -59,12 +59,13 @@ const Footer = () => {
       )
     }
   ];
-const urlBack="https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fsearch%3Fk%3Dhd%2Babstract%2Bwallpaper&psig=AOvVaw3dROAHaTpUdQt6xKD6Ok4C&ust=1758931703605000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCICCnKyR9Y8DFQAAAAAdAAAAABAL";
+  const urlBack = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fsearch%3Fk%3Dhd%2Babstract%2Bwallpaper&psig=AOvVaw3dROAHaTpUdQt6xKD6Ok4C&ust=1758931703605000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCICCnKyR9Y8DFQAAAAAdAAAAABAL";
+  
   return (
     <footer className="bg-black/50 border-t border-zinc-700"
-         style={{
-                    backgroundImage: `url(${urlBack})`,
-                  }}>
+      style={{
+        backgroundImage: `url(${urlBack})`,
+      }}>
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col items-center space-y-8">
@@ -90,9 +91,6 @@ const urlBack="https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com
               </a>
             ))}
           </div>
-
-         
-          
         </div>
       </div>
 
@@ -100,8 +98,9 @@ const urlBack="https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com
       <div className="border-t border-zinc-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            {/* CAMBIO AQUÍ: Usamos &copy; en lugar del símbolo */}
             <p className="text-gray-400 text-sm">
-              © {currentYear} Stay Cold Apparel. Todos los derechos reservados.
+              &copy; {currentYear} Stay Cold Apparel. Todos los derechos reservados.
             </p>
             
             {/* Legal Links */}

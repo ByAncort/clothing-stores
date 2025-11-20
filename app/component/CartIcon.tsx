@@ -1,12 +1,11 @@
-// app/component/CartIcon.tsx
 import React, { useState } from "react";
 import { useCart } from "~/hooks/useCart";
 import CartModal from "./CartModal";
 import CheckoutModal from "./CheckoutModal";
 
 type CartIconProps = {
-  onClick?: () => void;      // opcional: callback externo
-  className?: string;        // opcional: estilos extra desde el header
+  onClick?: () => void;
+  className?: string;
 };
 
 const CartIcon: React.FC<CartIconProps> = ({ onClick, className = "" }) => {
@@ -30,13 +29,12 @@ const CartIcon: React.FC<CartIconProps> = ({ onClick, className = "" }) => {
     setIsCartModalOpen(true);
   };
 
-  // Texto accesible para lectores de pantalla
+  // Texto accesible (CAMBIO AQUÍ: usamos "producto" para evitar tildes conflictivas)
   const countLabel = totalItems > 99 ? "99+" : String(totalItems);
-  const ariaLabel = `Ver carrito, ${totalItems} artículo${totalItems === 1 ? "" : "s"}`;
+  const ariaLabel = `Ver carrito, ${totalItems} producto${totalItems === 1 ? "" : "s"}`;
 
   return (
     <>
-      {/* Ícono del carrito (visible en todas las resoluciones) */}
       <button
         type="button"
         onClick={handleCartClick}
@@ -73,14 +71,12 @@ const CartIcon: React.FC<CartIconProps> = ({ onClick, className = "" }) => {
         )}
       </button>
 
-      {/* Modal del carrito */}
       <CartModal
         isOpen={isCartModalOpen}
         onClose={() => setIsCartModalOpen(false)}
         onCheckout={handleCheckout}
       />
 
-      {/* Modal de checkout */}
       <CheckoutModal
         isOpen={isCheckoutModalOpen}
         onClose={() => setIsCheckoutModalOpen(false)}
