@@ -1,77 +1,64 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 
 const HeroSection = ({
-  title = "BIGGEST GIVEAWAY WE'VE EVER DONE",
-  subtitle = "Destaca tu estilo con streetwear de tattoo artists únicos",
-  color = "white",
-  id = "home",
-  logos = [
-    { src: "../assets/SAP-partner-logo.png", alt: "SAP partner Logo", className: "h-12" },
-    { src: "../assets/Google_Cloud_Partner-2.png", alt: "Google Cloud Partner Logo", className: "h-10" },
-    { src: "../assets/oracle-partner-seeklogo.png", alt: "Oracle Partner Logo", className: "h-6" }
-  ],
+  title = "URBAN LEGENDS",
+  subtitle = "ELEVATE YOUR STREETWEAR GAME",
   videoSrc = "/videoplayback.webm"
 }) => {
-  const textColor = `text-${color}`;
-
   return (
-    <section
-      className="landing-section bg-black h-screen w-screen overflow-hidden relative"
-      data-header-color={color}
-      id={id}
-    >
-      {/* Video de fondo */}
-      <div className="absolute top-0 bottom-0 h-full w-full z-10">
-        <div className="absolute top-0 left-0 w-full h-full bg-black/70 z-10"></div>
+    <section className="relative h-screen w-full overflow-hidden bg-black">
+      {/* Background Video */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-black/40 z-10 mix-blend-multiply"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60 z-10"></div>
         <video
-          className="object-center object-cover h-full w-full"
+          className="w-full h-full object-cover scale-105 animate-slow-zoom"
           autoPlay
           muted
           loop
           playsInline
           src={videoSrc}
-        ></video>
+        />
       </div>
 
-      {/* Contenido principal */}
-      <div className="z-30 relative h-full flex flex-col">
-        <div className="container mx-auto px-6 h-full flex flex-col justify-center">
-          {/* Texto a la izquierda */}
-          <div className="w-full md:w-1/2">
-            <h2 className={`${textColor} text-4xl md:text-5xl font-medium mb-4`}>
-              {title}
-            </h2>
-            <p className={`${textColor} text-lg md:text-xl mb-8`}>
-              {subtitle}
-            </p>
-            
-            {/* Botón */}
-            <div className="mb-12">
-              <a
-                className="border-2 border-white bg-white/10 backdrop-blur-sm rounded-lg font-medium text-white px-8 py-3 inline-block hover:bg-white hover:text-black transition-colors duration-300"
-                href="#"
-              >
-                Contáctanos
-              </a>
-            </div>
-          </div>
+      {/* Content */}
+      <div className="relative z-20 h-full flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8">
+        <h1 className="font-oswald text-6xl md:text-8xl lg:text-9xl font-bold text-white tracking-tighter mb-6 animate-slide-in uppercase">
+          {title}
+        </h1>
+        <p className="font-sans text-lg md:text-2xl text-gray-200 mb-10 tracking-widest uppercase max-w-2xl mx-auto">
+          {subtitle}
+        </p>
 
-        {/* Logos estáticos alineados horizontalmente */}
-        {/* <div className="w-full md:w-1/2 ">
-        <div className="flex flex-wrap justify-center gap-8 px-4">
-            {logos.map((logo, index) => (
-            <img
-                key={index}
-                src={logo.src}
-                alt={logo.alt}
-                className={`${logo.className} opacity-80 hover:opacity-100 transition-opacity duration-300`}
-            />
-            ))}
+        <div className="flex flex-col sm:flex-row gap-6">
+          <Link
+            to="/catalog"
+            className="group relative px-8 py-4 bg-white text-black font-oswald font-bold text-xl uppercase tracking-wider overflow-hidden hover:text-white transition-colors duration-300"
+          >
+            <span className="relative z-10">Shop Collection</span>
+            <div className="absolute inset-0 bg-black transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out"></div>
+          </Link>
+          <Link
+            to="/contacto"
+            className="group relative px-8 py-4 border-2 border-white text-white font-oswald font-bold text-xl uppercase tracking-wider overflow-hidden hover:text-black transition-colors duration-300"
+          >
+            <span className="relative z-10">Contact Us</span>
+            <div className="absolute inset-0 bg-white transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out"></div>
+          </Link>
         </div>
-        </div> */}
+      </div>
 
-        </div>
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
+        <svg
+          className="w-6 h-6 text-white"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
       </div>
     </section>
   );

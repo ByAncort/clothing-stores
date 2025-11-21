@@ -35,13 +35,13 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
             <img
               src={product.imagen}
               alt={product.nombre}
-              className="w-full h-64 object-cover rounded-xl"
+              className="h-full w-full object-contain object-center transition-transform duration-500 group-hover:scale-110"
             />
             {product.imagenSecundaria && (
               <img
                 src={product.imagenSecundaria}
                 alt={`${product.nombre} - vista secundaria`}
-                className="w-full h-32 object-cover rounded-xl"
+                className="h-full w-full object-contain object-center transition-transform duration-500 group-hover:scale-110"
               />
             )}
           </div>

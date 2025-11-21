@@ -6,6 +6,7 @@ beforeAll(() => {
   // Nota: @testing-library/jasmine-dom exporta el objeto de matchers por defecto.
   if (typeof jasmine !== 'undefined' && (JasmineDOM as any)) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // @ts-ignore
     jasmine.addMatchers((JasmineDOM as any));
   }
   // Configuración global antes de todas las pruebas
