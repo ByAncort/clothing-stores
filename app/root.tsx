@@ -1,14 +1,22 @@
-// app/root.tsx - VERSIÓN CORRECTA PARA REACT ROUTER v7
-import { Links, Meta, Outlet, Scripts } from "react-router";
-import type { Route } from "./+types/root";
-import "./app.css";
-import Header from "~/component/Header";
-import Footer from "~/component/Footer";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+} from "react-router"; 
+import type { LinksFunction } from "react-router";
 
-export const links: Route.LinksFunction = () => [
+import "./app.css";
+import { CartProvider } from "~/hooks/useCart";
+
+// CORRECCIÓN AQUÍ: (component sin S)
+import Header from "~/component/Header"; 
+
+export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
-    rel: "preconnect", 
+    rel: "preconnect",
     href: "https://fonts.gstatic.com",
     crossOrigin: "anonymous",
   },
@@ -18,37 +26,28 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-export const meta: Route.MetaFunction = () => {
-  return [
-    { title: "stay cold apparel" },
-    { name: "description", content: "Tienda de ropa premium" },
-    { charset: "utf-8" },
-    { name: "viewport", content: "width=device-width,initial-scale=1" },
-  ];
-};
-
-export default function App() {
+export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
       <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
       <body>
-        <main className="relative w-full min-h-screen overflow-y-auto overflow-x-hidden scroll-smooth bg-gradient-to-br from-neutral-900 to-stone-800">
-          <div className="snap-center">
-            <Header />
-          </div>
-
-          {/* Contenido de las rutas hijas */}
-          <Outlet />
-
-          <div className="snap-center">
-            <Footer />
-          </div>
-        </main>
+        <CartProvider>
+            <Header /> 
+            {children}
+        </CartProvider>
+        
+        <ScrollRestoration />
         <Scripts />
       </body>
     </html>
   );
+}
+
+export default function App() {
+  return <Outlet />;
 }
