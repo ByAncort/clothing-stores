@@ -68,45 +68,45 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
 
             {/* Selector de tallas */}
             <div className="space-y-2">
-              <span className="text-sm font-medium text-gray-700">Talla</span>
+            <span className="text-sm font-medium text-gray-700">Talla</span>
+            <div className="flex space-x-2">
+              {["XS", "S", "M", "L", "XL"].map((talla) => (
+                <button
+                  key={talla}
+                  onClick={() => setSelectedSize(talla)}
+                  className={`px-3 py-2 border rounded-lg transition-colors ${
+                    selectedSize === talla
+                      ? "border-gray-900 bg-gray-900 text-white" // Seleccionado: Fondo negro, letra blanca
+                      : "border-gray-300 text-gray-900 hover:border-gray-500" // No seleccionado: Borde gris, LETRA NEGRA
+                  }`}
+                >
+                  {talla}
+                </button>
+              ))}
+            </div>
+          </div>
+
+            {/* Selector de colores (si aplica) */}
+            {product.colores > 0 && (
+            <div className="space-y-2">
+              <span className="text-sm font-medium text-gray-700">Color</span>
               <div className="flex space-x-2">
-                {["XS", "S", "M", "L", "XL"].map((talla) => (
+                {["Negro", "Blanco", "Azul", "Rojo"].slice(0, product.colores).map((color) => (
                   <button
-                    key={talla}
-                    onClick={() => setSelectedSize(talla)}
+                    key={color}
+                    onClick={() => setSelectedColor(color)}
                     className={`px-3 py-2 border rounded-lg transition-colors ${
-                      selectedSize === talla
-                        ? "border-gray-900 bg-gray-900 text-white"
-                        : "border-gray-300 hover:border-gray-500"
+                      selectedColor === color
+                        ? "border-gray-900 bg-gray-900 text-white" // Seleccionado
+                        : "border-gray-300 text-gray-900 hover:border-gray-500" // No seleccionado: Texto negro
                     }`}
                   >
-                    {talla}
+                    {color}
                   </button>
                 ))}
               </div>
             </div>
-
-            {/* Selector de colores (si aplica) */}
-            {product.colores > 0 && (
-              <div className="space-y-2">
-                <span className="text-sm font-medium text-gray-700">Color</span>
-                <div className="flex space-x-2">
-                  {["Negro", "Blanco", "Azul", "Rojo"].slice(0, product.colores).map((color) => (
-                    <button
-                      key={color}
-                      onClick={() => setSelectedColor(color)}
-                      className={`px-3 py-2 border rounded-lg transition-colors ${
-                        selectedColor === color
-                          ? "border-gray-900 bg-gray-900 text-white"
-                          : "border-gray-300 hover:border-gray-500"
-                      }`}
-                    >
-                      {color}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+          )}
 
             {/* Botones de acción */}
             <div className="flex space-x-4 pt-4">
