@@ -1,0 +1,11 @@
+import Catalog from "~/pages/catalog/catalog";
+import type { Route } from "./+types/home";
+export function meta(_: Route.MetaArgs) {
+  return [
+    { title: "stay cold apparel" },
+    { name: "description", content: "Welcome to React Router!" },
+  ];
+}
+export default function Home() {
+  return <Catalog/>;
+}
