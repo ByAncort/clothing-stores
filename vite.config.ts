@@ -11,5 +11,16 @@ export default defineConfig({
       { find: '~', replacement: '/app' }
     ],
   },
+  server: {
+  proxy: {
+    '/api/auth': {
+      target: 'http://localhost:9010',
+      changeOrigin: true,
+      secure: false,
+      // ESTO ES CLAVE: Re-escribe el path antes de enviarlo al backend
+      rewrite: (path) => path.replace(/^\/api\/auth/, '/api/auth/'), 
+    }
+  }
+}
 });
 

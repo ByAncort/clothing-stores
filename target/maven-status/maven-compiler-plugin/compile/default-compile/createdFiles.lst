@@ -1,0 +1,7 @@
+com\staycold\ms_productos_g\config\WebConfig.class
+com\staycold\ms_productos_g\model\Producto.class
+com\staycold\ms_productos_g\config\WebConfig$1.class
+com\staycold\ms_productos_g\MsProductosGApplication.class
+com\staycold\ms_productos_g\controller\ProductoController.class
+com\staycold\ms_productos_g\repository\ProductoRepository.class
+com\staycold\ms_productos_g\service\ProductoService.class

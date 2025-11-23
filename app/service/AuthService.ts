@@ -1,28 +1,28 @@
-// Configuración basada en el código de tu compañero
-const AUTH_API_URL = 'http://localhost:9010/api/auth'; 
+// URL de tu compañero (MS-Auth). Usamos el proxy de Vite que configuramos.
+const AUTH_BASE_URL = '/api/auth'; 
 
 export const AuthService = {
     
+    // --- LOGIN (INICIAR SESIÓN) ---
     login: async (username: string, password: string) => {
         try {
-            // El endpoint de tu compañero es /login
-            const response = await fetch(`${AUTH_API_URL}/login`, {
+            const response = await fetch(`${AUTH_BASE_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
 
             if (!response.ok) {
-                throw new Error('Usuario o contraseña incorrectos');
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || 'Credenciales incorrectas');
             }
 
             const data = await response.json();
-            
-            // Tu compañero devuelve el token en "token" según su JwtUtils
-            if (data.token) {
-                // Guardamos el token en el navegador (Punto 5 Rúbrica: Persistencia)
-                localStorage.setItem('jwt_token', data.token);
-                return data.token;
+            const tokenRecibido = data.token || data.accessToken || data.jwt;
+
+            if (tokenRecibido) {
+                localStorage.setItem('jwt_token', tokenRecibido);
+                return tokenRecibido;
             }
         } catch (error) {
             console.error("Login fallido", error);
@@ -30,6 +30,34 @@ export const AuthService = {
         }
     },
 
+    // --- REGISTRO (CREAR CUENTA) - ESTA ES LA FUNCIÓN FALTANTE ---
+    register: async (username: string, email: string, password: string) => {
+        try {
+            // Nota: Asumimos que el endpoint es "/register"
+            const response = await fetch(`${AUTH_BASE_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    username, 
+                    email, 
+                    password,
+                    roles: ["user"]
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || 'Error al crear usuario');
+            }
+            
+            return true; // Registro exitoso
+        } catch (error) {
+            console.error("Registro fallido", error);
+            throw error;
+        }
+    },
+
+    // --- CERRAR SESIÓN Y UTILIDADES ---
     logout: () => {
         localStorage.removeItem('jwt_token');
         window.location.href = '/';
@@ -41,5 +69,10 @@ export const AuthService = {
 
     isAuthenticated: () => {
         return !!localStorage.getItem('jwt_token');
+    },
+
+    getAuthHeader: () => {
+        const token = localStorage.getItem('jwt_token');
+        return token ? { 'Authorization': `Bearer ${token}` } : {};
     }
 };
