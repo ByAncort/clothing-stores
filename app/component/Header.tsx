@@ -1,10 +1,11 @@
 // app/components/Header.tsx
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom'; // Agregado useNavigate
 import CartIcon from './CartIcon';
 import CartModal from './CartModal';
 import CheckoutModal from './CheckoutModal';
 import { useCart } from '~/hooks/useCart';
+import { AuthService } from '~/service/AuthService'; // Importamos el servicio de Auth
 import Logo from './Logo';
 
 const Header = () => {
@@ -12,8 +13,26 @@ const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  
+  // Estado para saber si el usuario está logueado
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const cart = useCart();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // 1. Verificar autenticación al cargar el componente
+  useEffect(() => {
+    setIsLoggedIn(AuthService.isAuthenticated());
+  }, [location]); // Se ejecuta al cambiar de ruta para actualizar el estado si es necesario
+
+  // 2. Manejar Logout
+  const handleLogout = () => {
+    AuthService.logout();
+    setIsLoggedIn(false);
+    setIsMenuOpen(false);
+    navigate('/login');
+  };
 
   // Handle scroll effect
   useEffect(() => {
@@ -66,7 +85,9 @@ const Header = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-10 flex justify-between items-center">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Logo className="h-8 w-auto sm:h-10 text-white hover:text-gray-300 transition-colors duration-300" />
+            <Link to="/">
+                <Logo className="h-8 w-auto sm:h-10 text-white hover:text-gray-300 transition-colors duration-300" />
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
@@ -85,14 +106,31 @@ const Header = () => {
             </ul>
           </nav>
 
-          {/* Actions */}
+          {/* Actions Desktop */}
           <div className="hidden xl:flex items-center gap-6">
             <Link to="/catalog" className="text-sm font-medium uppercase text-white/80 hover:text-white transition-colors">
               Tienda
             </Link>
-            <Link to="/login" className="text-sm font-medium uppercase text-white/80 hover:text-white transition-colors">
-              Login
-            </Link>
+            
+            {/* LÓGICA LOGIN / LOGOUT DESKTOP */}
+            {isLoggedIn ? (
+                <>
+                    <Link to="/profile" className="text-sm font-medium uppercase text-indigo-400 hover:text-indigo-300 transition-colors">
+                        Mi Cuenta
+                    </Link>
+                    <button 
+                        onClick={handleLogout}
+                        className="text-sm font-medium uppercase text-red-400 hover:text-red-300 transition-colors"
+                    >
+                        Logout
+                    </button>
+                </>
+            ) : (
+                <Link to="/login" className="text-sm font-medium uppercase text-white/80 hover:text-white transition-colors">
+                    Login
+                </Link>
+            )}
+
             <div className="border-l border-white/20 pl-6">
               <CartIcon onClick={openCart} />
             </div>
@@ -136,6 +174,7 @@ const Header = () => {
                   </Link>
                 </li>
               ))}
+              
               <li className="border-t border-white/10 pt-4 mt-2">
                 <Link
                   to="/catalog"
@@ -145,15 +184,36 @@ const Header = () => {
                   Tienda
                 </Link>
               </li>
+
+              {/* LÓGICA LOGIN / LOGOUT MÓVIL */}
               <li>
-                <Link
-                  to="/login"
-                  className="text-xl font-oswald uppercase text-white/80 hover:text-white"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Login
-                </Link>
+                {isLoggedIn ? (
+                    <div className="flex flex-col gap-4">
+                        <Link
+                          to="/profile"
+                          className="text-xl font-oswald uppercase text-indigo-400 hover:text-indigo-300"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          Mi Cuenta
+                        </Link>
+                        <button
+                          onClick={handleLogout}
+                          className="text-xl font-oswald uppercase text-red-400 hover:text-red-300 text-left"
+                        >
+                          Logout
+                        </button>
+                    </div>
+                ) : (
+                    <Link
+                      to="/login"
+                      className="text-xl font-oswald uppercase text-white/80 hover:text-white"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Login
+                    </Link>
+                )}
               </li>
+
             </ul>
           </nav>
         </div>
