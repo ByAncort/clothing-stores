@@ -7,17 +7,18 @@ import type { Producto } from "~/types/product";
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [products, setProducts] = useState<Producto[]>([]);
+  const [loading, setLoading] = useState(true);
   
-  // Estado para el formulario
+  // Formulario vacío
   const [newProduct, setNewProduct] = useState({
     nombre: "", marca: "", precio: 0, stock: 10, 
     categoria: "Poleras", imagenUrl: "", descripcion: "", sku: ""
   });
 
-  // 1. SEGURIDAD: Si no está logueado, lo echamos fuera.
+  // 1. PROTECCIÓN: Si no hay login, mandarlo fuera.
   useEffect(() => {
     if (!AuthService.isAuthenticated()) {
-      alert("Zona Restringida: Inicia sesión primero.");
+      alert("Acceso denegado. Debes iniciar sesión.");
       navigate("/login");
     } else {
       loadProducts();
@@ -29,7 +30,20 @@ export default function AdminDashboard() {
       const data = await ProductService.getAll();
       setProducts(data);
     } catch (error) {
-      console.error("Error cargando productos");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("¿Seguro que quieres eliminar este producto?")) return;
+    try {
+      await ProductService.delete(id);
+      setProducts(products.filter((p) => p.id !== id)); // Actualizar visualmente
+      alert("Producto eliminado.");
+    } catch (error) {
+      alert("Error al eliminar. Verifica que tu token sea válido.");
     }
   };
 
@@ -41,26 +55,17 @@ export default function AdminDashboard() {
       setNewProduct({ ...newProduct, nombre: "", sku: "", imagenUrl: "" }); // Limpiar
       loadProducts(); // Recargar lista
     } catch (error) {
-      alert("Error: No tienes permiso de Administrador o el servidor falló.");
+      alert("Error al crear. ¿Iniciaste sesión?");
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("¿Estás seguro de eliminar este producto?")) return;
-    try {
-      await ProductService.delete(id);
-      setProducts(products.filter((p) => p.id !== id));
-      alert("Producto eliminado.");
-    } catch (error) {
-      alert("Error al eliminar.");
-    }
-  };
+  if (loading) return <div className="p-20 text-white text-center">Cargando panel...</div>;
 
   return (
-    <div className="min-h-screen bg-black text-white p-8 pt-24">
+    <div className="min-h-screen bg-black text-white p-6 pt-24">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
-          <h1 className="text-3xl font-bold text-white uppercase tracking-wider">Panel de Control</h1>
+          <h1 className="text-3xl font-bold uppercase tracking-wider">Panel de Control</h1>
           <button onClick={() => navigate("/")} className="text-gray-400 hover:text-white underline">
             ← Volver a la Tienda
           </button>
@@ -70,17 +75,17 @@ export default function AdminDashboard() {
           
           {/* FORMULARIO DE CREACIÓN */}
           <div className="bg-gray-900 p-6 rounded-xl border border-gray-800 h-fit shadow-lg">
-            <h2 className="text-xl font-bold mb-4 text-white">Nuevo Producto</h2>
+            <h2 className="text-xl font-bold mb-4 text-indigo-400 uppercase">Nuevo Producto</h2>
             <form onSubmit={handleCreate} className="space-y-4">
               <input 
                 type="text" placeholder="Nombre del Producto" required
-                className="w-full bg-black border border-gray-700 rounded p-3 text-white focus:border-white outline-none"
+                className="w-full bg-black border border-gray-700 rounded p-3 text-white focus:border-indigo-500 outline-none"
                 value={newProduct.nombre} onChange={e => setNewProduct({...newProduct, nombre: e.target.value})}
               />
               <div className="grid grid-cols-2 gap-2">
                   <input type="text" placeholder="Marca" required className="w-full bg-black border border-gray-700 rounded p-3 text-white"
                     value={newProduct.marca} onChange={e => setNewProduct({...newProduct, marca: e.target.value})} />
-                  <input type="text" placeholder="SKU (Código)" required className="w-full bg-black border border-gray-700 rounded p-3 text-white"
+                  <input type="text" placeholder="SKU" required className="w-full bg-black border border-gray-700 rounded p-3 text-white"
                     value={newProduct.sku} onChange={e => setNewProduct({...newProduct, sku: e.target.value})} />
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -97,24 +102,24 @@ export default function AdminDashboard() {
                 <option value="Chaquetas">Chaquetas</option>
                 <option value="Accesorios">Accesorios</option>
               </select>
-              <input type="text" placeholder="URL de Imagen (https://...)" required
+              <input type="text" placeholder="URL Imagen (https://...)" required
                 className="w-full bg-black border border-gray-700 rounded p-3 text-white"
                 value={newProduct.imagenUrl} onChange={e => setNewProduct({...newProduct, imagenUrl: e.target.value})}
               />
-              <button type="submit" className="w-full bg-white text-black hover:bg-gray-200 py-3 rounded font-bold mt-2 uppercase tracking-wide">
-                Guardar en Base de Datos
+              <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded font-bold mt-2 uppercase tracking-wide transition-colors">
+                Guardar Producto
               </button>
             </form>
           </div>
 
           {/* LISTA DE PRODUCTOS */}
           <div className="lg:col-span-2 bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-lg">
-            <h2 className="text-xl font-bold mb-4 text-white">Inventario ({products.length})</h2>
+            <h2 className="text-xl font-bold mb-4 text-indigo-400 uppercase">Inventario ({products.length})</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm text-gray-400">
                 <thead className="bg-black text-gray-200 uppercase text-xs">
                   <tr>
-                    <th className="px-4 py-3">Foto</th>
+                    <th className="px-4 py-3">Img</th>
                     <th className="px-4 py-3">Nombre</th>
                     <th className="px-4 py-3">SKU</th>
                     <th className="px-4 py-3">Precio</th>
@@ -133,7 +138,7 @@ export default function AdminDashboard() {
                       <td className="px-4 py-3 text-right">
                         <button 
                           onClick={() => handleDelete(product.id)}
-                          className="text-red-400 hover:text-red-300 font-bold hover:underline"
+                          className="text-red-400 hover:text-red-300 font-bold border border-red-900/50 bg-red-900/10 px-3 py-1 rounded hover:bg-red-900/30 transition-colors"
                         >
                           ELIMINAR
                         </button>

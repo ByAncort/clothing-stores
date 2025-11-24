@@ -74,5 +74,23 @@ export const AuthService = {
     getAuthHeader: () => {
         const token = localStorage.getItem('jwt_token');
         return token ? { 'Authorization': `Bearer ${token}` } : {};
-    }
+    },
+
+    // NUEVA FUNCIÓN: Obtener el ID del usuario desde el Token JWT
+    getUserId: (): number | null => {
+        const token = localStorage.getItem('jwt_token');
+        if (!token) return null;
+        
+        try {
+            // Decodificamos la parte central del token (Payload)
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            // Asumimos que el ID viene en el campo "id" o "userId" del token.
+            // Si tu compañero usó el standard "sub" para el username, 
+            // asegúrate de que el token incluya el ID numérico.
+            return payload.id || payload.userId || null; 
+        } catch (e) {
+            return null;
+        }
+    },
+
 };

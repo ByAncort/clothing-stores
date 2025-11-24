@@ -1,161 +1,101 @@
+import { AuthService } from "./AuthService";
 
-import type { Producto } from '~/types/product';
+// Conexión a MS-CARD (Puerto 9003)
+const CART_API_URL = 'http://localhost:9003/api/carrito';
 
-interface CartItem {
-  id: string | number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-  size?: string;
-  color?: string;
-  
-  [key: string]: any;
+// Interfaces DTO (Coinciden con el Java de tu compañero)
+export interface CarritoRequest {
+    productoId: number;
+    cantidad: number;
+    talla: string;
+    color: string;
 }
 
-class CartService {
-  private items: CartItem[] = [];
-  private subscribers: Array<(items: CartItem[]) => void> = [];
+// Ajusta esta interfaz según lo que devuelve exactamente tu backend
+export interface CarritoResponse {
+    id: number;
+    usuarioId: number;
+    items: any[]; 
+    subtotal: number;
+    total: number;
+}
 
-  constructor() {
-    this.loadFromStorage();
-  }
-
-  
-  public loadFromStorage() {
-    if (typeof window !== 'undefined') {
-      const savedCart = localStorage.getItem('cart');
-      if (savedCart) {
-        try {
-          this.items = JSON.parse(savedCart);
-        } catch (error) {
-          console.error('Error loading cart from storage:', error);
-          this.items = [];
+export const CartService = {
+    
+    // Helper para headers (MS-CARD exige X-User-Id)
+    getHeaders: () => {
+        const token = AuthService.getToken();
+        // Intentamos sacar el ID del usuario del token. 
+        // Si el token no tiene ID numérico, esto podría fallar en el backend.
+        // Asegúrate de que el token JWT incluya el claim "id" o "userId".
+        const userId = AuthService.getUserId(); 
+        
+        if (!userId) {
+            // Si no hay usuario, devolvemos headers básicos, pero el backend probablemente falle.
+            console.warn("No se encontró ID de usuario para el carrito");
         }
-      }
+
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'X-User-Id': String(userId || 0) // Enviamos 0 si no hay ID, para evitar crash del front
+        };
+    },
+
+    // 1. Obtener Carrito
+    getCart: async () => {
+        try {
+            const response = await fetch(CART_API_URL, {
+                method: 'GET',
+                headers: CartService.getHeaders()
+            });
+            if (!response.ok) throw new Error('Error cargando carrito remoto');
+            return await response.json();
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+
+    // 2. Agregar Producto
+    addItem: async (item: CarritoRequest) => {
+        const response = await fetch(`${CART_API_URL}/agregar`, {
+            method: 'POST',
+            headers: CartService.getHeaders(),
+            body: JSON.stringify(item)
+        });
+        if (!response.ok) throw new Error('Error agregando producto al carrito');
+        return response.json();
+    },
+
+    // 3. Actualizar Cantidad
+    updateQuantity: async (itemId: number, cantidad: number) => {
+        // El backend usa @RequestParam para cantidad
+        const response = await fetch(`${CART_API_URL}/actualizar/${itemId}?cantidad=${cantidad}`, {
+            method: 'PUT',
+            headers: CartService.getHeaders()
+        });
+        if (!response.ok) throw new Error('Error actualizando cantidad');
+        return response.json();
+    },
+
+    // 4. Remover Producto
+    removeItem: async (itemId: number) => {
+        const response = await fetch(`${CART_API_URL}/remover/${itemId}`, {
+            method: 'DELETE',
+            headers: CartService.getHeaders()
+        });
+        if (!response.ok) throw new Error('Error eliminando producto');
+        return response.json();
+    },
+
+    // 5. Limpiar Carrito
+    clearCart: async () => {
+        const response = await fetch(`${CART_API_URL}/limpiar`, {
+            method: 'DELETE',
+            headers: CartService.getHeaders()
+        });
+        if (!response.ok) throw new Error('Error limpiando carrito');
+        return true;
     }
-  }
-
-  
-  private saveToStorage() {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('cart', JSON.stringify(this.items));
-    }
-  }
-
-  
-  public subscribe(callback: (items: CartItem[]) => void): () => void {
-    this.subscribers.push(callback);
-    
-    callback(this.items);
-    
-    return () => {
-      this.subscribers = this.subscribers.filter(sub => sub !== callback);
-    };
-  }
-
-  
-  private notify() {
-    this.subscribers.forEach(callback => callback([...this.items]));
-    this.saveToStorage();
-  }
-
-  
-  public addItem(product: Producto, options: { size?: string; color?: string } = {}) {
-    
-    const uniqueId = this.createUniqueId(product.id, options.size, options.color);
-    
-    const existingItem = this.items.find(item => item.id === uniqueId);
-    
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      const cartItem: CartItem = {
-        id: uniqueId,
-        name: product.nombre,
-        price: product.precio,
-        image: product.imagen,
-        quantity: 1,
-        originalProductId: product.id, 
-        ...options
-      };
-      
-      this.items.push(cartItem);
-    }
-    
-    this.notify();
-  }
-
-  
-  private createUniqueId(productId: number, size?: string, color?: string): string {
-    let uniqueId = productId.toString();
-    if (size) uniqueId += `-${size}`;
-    if (color) uniqueId += `-${color}`;
-    return uniqueId;
-  }
-
-  
-  public removeItem(itemId: string | number) {
-    this.items = this.items.filter(item => item.id !== itemId);
-    this.notify();
-  }
-
-  
-  public updateQuantity(itemId: string | number, quantity: number) {
-    const item = this.items.find(item => item.id === itemId);
-    if (item) {
-      if (quantity <= 0) {
-        this.removeItem(itemId);
-      } else {
-        item.quantity = quantity;
-        this.notify();
-      }
-    }
-  }
-
-  
-  public incrementQuantity(itemId: string | number) {
-    this.updateQuantity(itemId, this.getQuantity(itemId) + 1);
-  }
-
-  
-  public decrementQuantity(itemId: string | number) {
-    this.updateQuantity(itemId, this.getQuantity(itemId) - 1);
-  }
-
-  
-  public getQuantity(itemId: string | number): number {
-    const item = this.items.find(item => item.id === itemId);
-    return item ? item.quantity : 0;
-  }
-
-  
-  public getTotalItems(): number {
-    return this.items.reduce((total, item) => total + item.quantity, 0);
-  }
-
-  
-  public getItems(): CartItem[] {
-    return [...this.items];
-  }
-
-  
-  public clear() {
-    this.items = [];
-    this.notify();
-  }
-
-  
-  public getTotalPrice(): number {
-    return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-  }
-
-  
-  public isInCart(productId: number, size?: string, color?: string): boolean {
-    const uniqueId = this.createUniqueId(productId, size, color);
-    return this.items.some(item => item.id === uniqueId);
-  }
-}
-
-
-export const cartService = new CartService();
+};
