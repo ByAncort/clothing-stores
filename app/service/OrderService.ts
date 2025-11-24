@@ -1,23 +1,35 @@
 import { AuthService } from "./AuthService";
 
-// URL FUTURA (Cuando tu compañero termine, descomentas esto y borras la simulación)
-// const ORDER_API_URL = 'http://localhost:8082/api/orders';
+// URL de tu Backend (Ajusta el puerto si tu compañero usa otro, por ahora 8082)
+// Si usas proxy en vite.config.ts, cámbialo a '/api/orders'
+const ORDER_API_URL = 'http://localhost:8082/api/orders';
+
+// Definición de una Orden para TypeScript
+export interface Order {
+    id: number;
+    fecha: string;
+    total: number;
+    estado: string;
+    detalleProductos: string; 
+}
 
 export const OrderService = {
 
+    // 1. CREAR ORDEN (Ya la tenías)
     createOrder: async (orderData: any) => {
-        console.log("📦 [Frontend] Preparando envío de orden:", orderData);
+        console.log("📦 [Frontend] Enviando orden:", orderData);
 
-        // --- SIMULACIÓN DE BACKEND (PARA TU DESARROLLO) ---
+        // --- MODO SIMULACIÓN (Descomenta esto si no tienes backend aún) ---
+        /*
         return new Promise((resolve) => {
             setTimeout(() => {
-                console.log("✅ [Frontend] Orden procesada exitosamente (Simulado)");
+                console.log("✅ Orden simulada con éxito");
                 resolve({ status: "success", id: Math.floor(Math.random() * 1000) });
-            }, 1500); // Simulamos 1.5 segundos de espera
+            }, 1500);
         });
+        */
 
-        // --- CÓDIGO REAL (MANTENER COMENTADO HASTA LA INTEGRACIÓN) ---
-        /*
+        // --- MODO REAL (Backend de tu compañero) ---
         const token = AuthService.getToken();
         const response = await fetch(ORDER_API_URL, {
             method: 'POST',
@@ -30,6 +42,36 @@ export const OrderService = {
 
         if (!response.ok) throw new Error('Error al crear orden');
         return response.json();
-        */
+    },
+
+    // 2. OBTENER MIS ÓRDENES (ESTA ES LA QUE FALTABA)
+    getMyOrders: async (username: string): Promise<Order[]> => {
+        const token = AuthService.getToken();
+        
+        try {
+            // Llamamos al endpoint: GET /api/orders/{username}
+            const response = await fetch(`${ORDER_API_URL}/${username}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                // Si falla (404 o 500), retornamos lista vacía para que no explote la pantalla
+                console.warn("No se pudo obtener el historial.");
+                return []; 
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error("Error al cargar órdenes:", error);
+            // Retornamos datos falsos si falla, para que veas cómo se ve la tabla
+            // (Borra esto cuando tengas el backend real)
+            return [
+                { id: 101, fecha: new Date().toISOString(), total: 150.00, estado: "CONFIRMADO", detalleProductos: "Simulado" },
+                { id: 102, fecha: new Date().toISOString(), total: 29.99, estado: "ENVIADO", detalleProductos: "Simulado" }
+            ];
+        }
     }
 };
