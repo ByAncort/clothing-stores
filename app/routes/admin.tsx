@@ -43,7 +43,7 @@ export default function AdminDashboard() {
       setProducts(products.filter((p) => p.id !== id)); // Actualizar visualmente
       alert("Producto eliminado.");
     } catch (error) {
-      alert("Error al eliminar. Verifica que tu token sea válido.");
+      alert(error);
     }
   };
 
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
       setNewProduct({ ...newProduct, nombre: "", sku: "", imagenUrl: "" }); // Limpiar
       loadProducts(); // Recargar lista
     } catch (error) {
-      alert("Error al crear. ¿Iniciaste sesión?");
+      alert(error);
     }
   };
 
