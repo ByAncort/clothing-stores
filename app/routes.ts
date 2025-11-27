@@ -7,7 +7,7 @@ export default [
   route("catalog/:categoryName?", "routes/catalog.tsx"), 
   route("contacto", "routes/contacto.tsx"),
   route("login", "routes/login.tsx"),
-  route("admin", "routes/admin.tsx"),
+  route("admin", "routes/AdminRoutes.tsx"),
   route("profile", "routes/profile.tsx"),
   route("admin/providers", "routes/admin/providers.tsx"),
 ] satisfies RouteConfig;

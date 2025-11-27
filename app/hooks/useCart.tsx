@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext, useContext, type ReactNode } from 'react';
+import { AuthService } from '~/service/AuthService';
 import type { Producto } from '~/types/product';
 
 export interface CartOptions {
@@ -52,7 +53,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // --- FUNCIONES ---
 
-  const addItem = (product: Producto, options?: CartOptions) => {
+const addItem = async (product: Producto, options?: CartOptions) => {
+    
+    // 1. GUARDAR NORMALMENTE EN LOCALSTORAGE
     setItems((currentItems) => {
       const existingItemIndex = currentItems.findIndex(
         (item) => 
@@ -75,7 +78,40 @@ export function CartProvider({ children }: { children: ReactNode }) {
           category: options?.category
       }];
     });
-  };
+
+
+    // 2. SI EL USUARIO ESTÁ LOGEADO -> ENVIAR AL MICROSERVICIO
+    try {
+        if (AuthService.isAuthenticated()) {
+            const userId = AuthService.getUserIdFromStorage();
+            const token = AuthService.getToken();
+
+            if (!userId || !token) {
+                console.warn("Usuario autenticado pero faltan datos (idUser o token)");
+                return;
+            }
+
+            await fetch("http://localhost:9003/api/carrito/agregar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-User-Id": String(userId),
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    productoId: product.id,
+                    cantidad: 1,
+                    talla: options?.size || null,
+                    color: options?.color || null
+                })
+            });
+        }
+
+    } catch (err) {
+        console.error("Error enviando item al microservicio carrito:", err);
+    }
+};
+
 
   const removeItem = (itemId: number | string) => {
     setItems((currentItems) => currentItems.filter((item) => String(item.id) !== String(itemId)));

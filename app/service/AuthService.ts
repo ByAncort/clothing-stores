@@ -1,12 +1,12 @@
-// URL de tu compañero (MS-Auth). Usamos el proxy de Vite que configuramos.
-const AUTH_BASE_URL = '/api/auth'; 
+import { getRoles } from "@testing-library/dom";
+
+const AUTH_BASE_URL = 'http://localhost:9001'; 
 
 export const AuthService = {
     
-    // --- LOGIN (INICIAR SESIÓN) ---
     login: async (username: string, password: string) => {
         try {
-            const response = await fetch(`${AUTH_BASE_URL}/login`, {
+            const response = await fetch(`${AUTH_BASE_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
@@ -18,6 +18,7 @@ export const AuthService = {
             }
 
             const data = await response.json();
+            localStorage.setItem('userData', JSON.stringify(data));
             const tokenRecibido = data.token || data.accessToken || data.jwt;
 
             if (tokenRecibido) {
@@ -30,39 +31,76 @@ export const AuthService = {
         }
     },
 
-    // --- REGISTRO (CREAR CUENTA) - ESTA ES LA FUNCIÓN FALTANTE ---
     register: async (username: string, email: string, password: string) => {
         try {
-            // Nota: Asumimos que el endpoint es "/register"
-            const response = await fetch(`${AUTH_BASE_URL}/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
+            console.log(JSON.stringify({ 
                     username, 
                     email, 
-                    password,
-                    roles: ["user"]
+                    password
+                    }));
+
+        const response = await fetch("http://localhost:9001/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "accept": "*/*",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: username,
+                    email: email,
+                    password: password
                 })
             });
 
+            const data = await response.json();
+            console.log(data);
+
+
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.message || 'Error al crear usuario');
+                throw new Error(errorData.message || 'Error al crear usuario: ' + data. message);
             }
             
-            return true; // Registro exitoso
+            return true; 
         } catch (error) {
             console.error("Registro fallido", error);
             throw error;
         }
     },
 
-    // --- CERRAR SESIÓN Y UTILIDADES ---
     logout: () => {
         localStorage.removeItem('jwt_token');
+        localStorage.removeItem('userData');
         window.location.href = '/';
     },
+    getUserIdFromStorage: (): number | null => {
+    const data = localStorage.getItem('userData');
+    if (!data) return null;
 
+    try {
+        const parsed = JSON.parse(data);
+        return parsed?.idUser ?? null;
+    } catch {
+        return null;
+    }
+    },
+
+    getRoles: () => {
+        const data = localStorage.getItem('userData');
+        if (!data) return [];
+
+        try {
+            const parsed = JSON.parse(data);
+            return parsed?.roles ?? [];
+        } catch (e) {
+            console.error("Error parsing userData:", e);
+            return [];
+        }
+    },
+    isAdmin: () => {
+        const roles = AuthService.getRoles();
+        return roles.some((r: any) => r.name === "ROLE_ADMIN");
+    },
     getToken: () => {
         return localStorage.getItem('jwt_token');
     },
@@ -76,17 +114,12 @@ export const AuthService = {
         return token ? { 'Authorization': `Bearer ${token}` } : {};
     },
 
-    // NUEVA FUNCIÓN: Obtener el ID del usuario desde el Token JWT
     getUserId: (): number | null => {
         const token = localStorage.getItem('jwt_token');
         if (!token) return null;
         
         try {
-            // Decodificamos la parte central del token (Payload)
             const payload = JSON.parse(atob(token.split('.')[1]));
-            // Asumimos que el ID viene en el campo "id" o "userId" del token.
-            // Si tu compañero usó el standard "sub" para el username, 
-            // asegúrate de que el token incluya el ID numérico.
             return payload.id || payload.userId || null; 
         } catch (e) {
             return null;

@@ -1,85 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import ProductModal from './ProductModal';
-
-// --- 1. DICCIONARIO DE RESPALDO (Sólo se usa si tus fotos fallan) ---
-const IMAGENES_POR_DEFECTO: Record<string, string> = {
-    'Poleras': 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80',
-    'Hoodies': 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80',
-    'Chaquetas': 'https://images.unsplash.com/photo-1559551409-dadc959f76b8?auto=format&fit=crop&w=800&q=80',
-    'Accesorios': 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80',
-    'Joyas': 'https://images.unsplash.com/photo-1599643478518-17488fbbcd75?auto=format&fit=crop&w=800&q=80',
-    'Shorts': 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&w=800&q=80'
-};
-
-// --- 2. TUS DATOS CON TUS LINKS ORIGINALES ---
-const PRODUCTOS_SIMULADOS: ProductoBackend[] = [
-    {
-        id: 1, 
-        nombre: 'Urban Tee White', 
-        marca: 'StayCold', 
-        descripcion: 'Corte oversize, algodón pesado.',
-        precio: 29.99, 
-        stock: 50, 
-        categoria: 'Poleras', 
-        // TU LINK ORIGINAL
-        imagenUrl: 'https://www.staycoldapparel.com/cdn/shop/files/Think_Twice_Oversized_Tee_White_7.jpg?v=1749041218&width=800', 
-        sku: 'MOCK-001', 
-        calificacion: 5
-    },
-    {
-        id: 2, 
-        nombre: 'Denim Jacket Pro', 
-        marca: 'UrbanStyle', 
-        descripcion: 'Estilo callejero clásico.',
-        precio: 65.00, 
-        stock: 20, 
-        categoria: 'Chaquetas', 
-        // TU LINK ORIGINAL
-        imagenUrl: 'https://www.staycoldapparel.com/cdn/shop/files/ReignOfBlood_grey_-BomberJacket_AcidWashed_63.jpg?v=1760096328&width=800', 
-        sku: 'MOCK-002', 
-        calificacion: 4
-    },
-    {
-        id: 3, 
-        nombre: 'Eternal Conquest 3.0 - Tote Bag', 
-        marca: 'TravelGear', 
-        descripcion: 'Resistente para todo viaje.',
-        precio: 45.50, 
-        stock: 30, 
-        categoria: 'Accesorios', 
-        // TU LINK ORIGINAL
-        imagenUrl: 'https://www.staycoldapparel.com/cdn/shop/files/EternalConquestBag3.jpg?v=1731339655&width=800', 
-        sku: 'MOCK-003', 
-        calificacion: 5
-    },
-    {
-        id: 4, 
-        nombre: 'Black Hoodie', 
-        marca: 'StayCold', 
-        descripcion: 'El básico infaltable.',
-        precio: 50.00, 
-        stock: 10, 
-        categoria: 'Hoodies', 
-        // TU LINK ORIGINAL
-        imagenUrl: 'https://www.staycoldapparel.com/cdn/shop/files/Daggerwave_greydye_-OversizedHoodie_350GSM_4.jpg?v=1759480842&width=800', 
-        sku: 'MOCK-004', 
-        calificacion: 5
-    },
-    {
-        id: 5, 
-        nombre: 'Nightbreed (purple tie dye) - Prime Shorts', 
-        marca: 'StayCold', 
-        descripcion: 'Nightbreed Essential Prime Shorts.',
-        precio: 50.00, 
-        stock: 10, 
-        categoria: 'Shorts', 
-        // TU LINK ORIGINAL
-        imagenUrl: 'https://www.staycoldapparel.com/cdn/shop/files/NigthbreedEssential-PrimeShorts-purple-allover19.jpg?v=1753897872&width=800', 
-        sku: 'MOCK-004', 
-        calificacion: 5
-    }
-  ];
+import { ProductService } from '~/service/ProductService';
 
 // --- INTERFACES ---
 interface ProductoBackend {
@@ -96,6 +18,35 @@ interface ProductoBackend {
   imagenSecundaria?: string;
 }
 
+// Añade esta interfaz Producto que falta
+export interface Producto {
+  // --- Campos Obligatorios (Vienen del Backend) ---
+  id: number;
+  nombre: string;
+  marca: string;
+  descripcion: string;
+  precio: number;
+  stock: number;
+  categoria: string;
+  imagenUrl: string;
+  sku: string;
+
+  // --- Campos Opcionales / Visuales (Frontend) ---
+  colores?: number;
+  imagenSecundaria?: string;
+  reseñas?: number;
+  calificacion?: number;
+  tipo?: string;
+
+  // --- Propiedades Legacy (Compatibilidad con código viejo) ---
+  imagen?: string; 
+  price?: number;
+  name?: string;
+  especificaciones?: string[];
+  esVideo?: boolean;
+  videoUrl?: string;
+}
+
 type Ordenamiento = 'nombre' | 'precio-asc' | 'precio-desc' | 'calificacion' | 'mas-recientes';
 type FiltroCategoria = string;
 
@@ -105,6 +56,60 @@ const categoryMapping: Record<string, string> = {
     'jackets': 'Chaquetas',
     'shorts': 'Shorts',
     'accessories': 'Accesorios',
+};
+
+// Añade estas constantes que faltan (ajusta según tus necesidades)
+const PRODUCTOS_SIMULADOS: ProductoBackend[] = [
+  // Tus productos simulados aquí
+];
+
+const IMAGENES_POR_DEFECTO: Record<string, string> = {
+  'Poleras': 'https://via.placeholder.com/300x400',
+  'Hoodies': 'https://via.placeholder.com/300x400',
+  'Chaquetas': 'https://via.placeholder.com/300x400',
+  'Shorts': 'https://via.placeholder.com/300x400',
+  'Accesorios': 'https://via.placeholder.com/300x400',
+};
+
+// DTO function - SOLO UNA VEZ
+export const productoBackendToProducto = (
+  productoBackend: ProductoBackend, 
+  opciones: {
+    colores?: number;
+    reseñas?: number;
+    tipo?: string;
+    especificaciones?: string[];
+  } = {}
+): Producto => {
+  return {
+    // Campos del backend
+    id: productoBackend.id,
+    nombre: productoBackend.nombre,
+    marca: productoBackend.marca,
+    descripcion: productoBackend.descripcion,
+    precio: productoBackend.precio,
+    stock: productoBackend.stock,
+    categoria: productoBackend.categoria,
+    imagenUrl: productoBackend.imagenUrl,
+    sku: productoBackend.sku,
+    calificacion: productoBackend.calificacion,
+    imagenSecundaria: productoBackend.imagenSecundaria,
+    
+    // Campos legacy
+    imagen: productoBackend.imagenUrl,
+    price: productoBackend.precio,
+    name: productoBackend.nombre,
+    
+    // Campos opcionales con valores por defecto
+    colores: opciones.colores,
+    reseñas: opciones.reseñas,
+    tipo: opciones.tipo,
+    especificaciones: opciones.especificaciones,
+    
+    // Campos que normalmente serían false/undefined
+    esVideo: false,
+    videoUrl: undefined
+  };
 };
 
 export default function ProductList() {
@@ -117,7 +122,10 @@ export default function ProductList() {
   const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
 
   const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
-  const [selectedProduct, setSelectedProduct] = useState<ProductoBackend | null>(null);
+  
+  // CORREGIDO: Ahora usa la interfaz Producto
+  const [selectedProduct, setSelectedProduct] = useState<Producto | null>(null);
+
   const [ordenamiento, setOrdenamiento] = useState<Ordenamiento>('mas-recientes');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<FiltroCategoria>('todas');
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
@@ -131,28 +139,22 @@ export default function ProductList() {
       }
   }, [location, categoryName]);
 
-  // Cargar datos
+  // Cargar datos usando el ProductService
   useEffect(() => {
-    fetch('http://localhost:8080/api/productos')
-      .then(res => {
-        if (!res.ok) throw new Error("Error conectando al Backend");
-        return res.json();
-      })
-      .then(data => {
-        const dataMejorada = data.map((p: any) => ({
-            ...p,
-            calificacion: 5,
-            imagenSecundaria: p.imagenUrl
-        }));
-        setProductos(dataMejorada);
+    const loadProducts = async () => {
+      try {
+        const data = await ProductService.getAll();
+        setProductos(data as ProductoBackend[]);
         setLoading(false);
-      })
-      .catch(err => {
+      } catch (err) {
         console.warn("⚠️ Backend no disponible. Usando datos simulados.", err);
         setProductos(PRODUCTOS_SIMULADOS);
         setError(null); 
         setLoading(false);
-      });
+      }
+    };
+
+    loadProducts();
   }, []);
 
   const categoriasDB = useMemo(() => {
@@ -180,6 +182,24 @@ export default function ProductList() {
       setFailedImages(prev => new Set(prev).add(id));
   };
 
+  // Función para manejar el clic en producto - CONVERTIR A Producto
+  const handleProductClick = (productBackend: ProductoBackend) => {
+    const isImageBroken = failedImages.has(productBackend.id) || !productBackend.imagenUrl;
+    const imagenFinal = isImageBroken 
+        ? (IMAGENES_POR_DEFECTO[productBackend.categoria] || IMAGENES_POR_DEFECTO['Accesorios'])
+        : productBackend.imagenUrl;
+
+    // Crear producto con imagen corregida
+    const productWithFixedImage: ProductoBackend = {
+      ...productBackend,
+      imagenUrl: imagenFinal
+    };
+
+    // Convertir a Producto usando el DTO
+    const productoConvertido = productoBackendToProducto(productWithFixedImage);
+    setSelectedProduct(productoConvertido);
+  };
+
   if (loading) return <div className="text-center py-20 text-white">Cargando catálogo...</div>;
   
   if (error && productos.length === 0) return <div className="text-center py-20 text-red-500">{error}</div>;
@@ -188,7 +208,7 @@ export default function ProductList() {
     <div className="py-12 mt-6">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold tracking-tight text-gray-800 sm:text-5xl capitalize">
+          <h2 className="text-4xl font-bold tracking-tight text-red-500 sm:text-5xl capitalize">
             {categoriaSeleccionada === 'todas' ? 'Colección Destacada' : categoriaSeleccionada}
           </h2>
         </div>
@@ -245,7 +265,7 @@ export default function ProductList() {
         
         {/* GRID DE PRODUCTOS */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {productosFiltradosYOrdenados.map((product, index) => {
+          {productosFiltradosYOrdenados.map((product) => {
             
             // LÓGICA: Intentamos usar la URL del producto (tus links).
             // Si falla, usa el diccionario de Unsplash.
@@ -260,12 +280,12 @@ export default function ProductList() {
                 className="group relative overflow-hidden rounded-2xl bg-white shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer"
                 onMouseEnter={() => setHoveredProduct(product.id)}
                 onMouseLeave={() => setHoveredProduct(null)}
-                // IMPORTANTE: Pasamos la imagen corregida al modal para que no se rompa ahí tampoco
-                onClick={() => setSelectedProduct({ ...product, imagenUrl: imagenFinal })} 
+                // CORREGIDO: Usar la función de conversión
+                onClick={() => handleProductClick(product)} 
               >
                 <div className="aspect-[3/4] w-full bg-gray-200 relative flex items-center justify-center overflow-hidden">
                     <img
-                        src={imagenFinal}
+                        src={product.imagenUrl}
                         alt={product.nombre}
                         className="h-full w-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
                         onError={(e) => {
@@ -289,7 +309,7 @@ export default function ProductList() {
 
         {selectedProduct && (
             <ProductModal
-                product={selectedProduct as any}
+                product={selectedProduct} // Ahora es tipo Producto, no any
                 onClose={() => setSelectedProduct(null)}
             />
         )}

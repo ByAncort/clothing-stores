@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useCart } from "~/hooks/useCart";
 
-interface Product {
+// Usa la misma interfaz Producto que tienes en ProductList
+export interface Producto {
+  // --- Campos Obligatorios (Vienen del Backend) ---
   id: number;
   nombre: string;
   marca: string;
@@ -11,13 +13,25 @@ interface Product {
   categoria: string;
   imagenUrl: string;
   sku: string;
+
+  // --- Campos Opcionales / Visuales (Frontend) ---
   colores?: number;
+  imagenSecundaria?: string;
   reseñas?: number;
+  calificacion?: number;
   tipo?: string;
+
+  // --- Propiedades Legacy (Compatibilidad con código viejo) ---
+  imagen?: string; 
+  price?: number;
+  name?: string;
+  especificaciones?: string[];
+  esVideo?: boolean;
+  videoUrl?: string;
 }
 
 interface ProductModalProps {
-  product: Product | null;
+  product: Producto | null;
   onClose: () => void;
 }
 
@@ -43,10 +57,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
       return;
     }
     
-    addItem(product as any, {
+    // Usa el producto directamente sin 'as any'
+    addItem(product, {
       size: selectedSize,
       color: selectedColor,
-      category: product.categoria // IMPORTANTE: Pasar categoría al carrito
+      category: product.categoria
     });
     
     onClose();
@@ -86,13 +101,32 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
 
             <div className="flex items-baseline mb-4">
               <span className="text-3xl font-bold text-gray-900">${product.precio}</span>
+              {/* Mostrar calificación si existe */}
+              {product.calificacion && (
+                <span className="ml-4 text-sm text-yellow-600">
+                  ⭐ {product.calificacion}/5
+                </span>
+              )}
             </div>
 
             <p className="text-gray-600 text-sm mb-6 leading-relaxed">
                {product.descripcion || "Sin descripción disponible."}
             </p>
 
-            {/* TALLAS (Corregido color de texto) */}
+            {/* Mostrar stock si es bajo */}
+            {product.stock < 10 && product.stock > 0 && (
+              <div className="mb-4 text-sm text-orange-600">
+                ⚠️ Quedan solo {product.stock} unidades
+              </div>
+            )}
+
+            {product.stock === 0 && (
+              <div className="mb-4 text-sm text-red-600">
+                ❌ Producto agotado
+              </div>
+            )}
+
+            {/* TALLAS */}
             <div className="space-y-3 mb-6">
               <span className="text-sm font-bold text-gray-900 uppercase">Talla</span>
               <div className="flex flex-wrap gap-3">
@@ -112,7 +146,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
               </div>
             </div>
 
-            {/* COLORES (Corregido color de texto) */}
+            {/* COLORES - Usa product.colores en lugar de product.colors */}
             {(product.colores && product.colores > 0) && (
               <div className="space-y-3 mb-8">
                 <span className="text-sm font-bold text-gray-900 uppercase">Color</span>
@@ -134,11 +168,25 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
               </div>
             )}
 
-            <div className="mt-auto grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
-              <button onClick={handleAddToCart} className="bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 uppercase text-sm tracking-wide">
-                Añadir al Carrito
+            <div className=" grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+              <button 
+                onClick={handleAddToCart} 
+                className={`py-3 rounded-lg font-bold uppercase text-sm tracking-wide ${
+                  product.stock === 0 
+                    ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
+                    : 'bg-black text-white hover:bg-gray-800'
+                }`}
+              >
+                {product.stock === 0 ? 'Agotado' : 'Añadir al Carrito'}
               </button>
-              <button onClick={() => alert("Funcionalidad en construcción")} className="border-2 border-gray-200 text-gray-900 py-3 rounded-lg font-bold hover:border-gray-400 uppercase text-sm tracking-wide">
+              <button 
+                onClick={() => product.stock > 0 ? alert("Funcionalidad en construcción") : null}
+                className={`border-2 py-3 rounded-lg font-bold uppercase text-sm tracking-wide ${
+                  product.stock === 0
+                    ? 'border-gray-300 text-gray-400 cursor-not-allowed'
+                    : 'border-gray-200 text-gray-900 hover:border-gray-400'
+                }`}
+              >
                 Comprar Ahora
               </button>
             </div>
